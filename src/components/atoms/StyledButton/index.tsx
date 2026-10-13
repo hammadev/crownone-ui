@@ -1,7 +1,7 @@
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useRef } from "react";
 import { ActivityIndicator, Animated, Pressable, StyleSheet, View, ViewStyle } from "react-native";
-import { CONTAINER_PADDING, RADIUS } from "../../../theme";
+import { ABSOLUTE_FILL, CONTAINER_PADDING, RADIUS } from "../../../theme";
 import { useTheme } from "../../../theme/ThemeContext";
 import StyledText from "../StyledText";
 
@@ -102,7 +102,7 @@ const StyledButton: React.FC<StyledButtonProps> = ({
             colors={[theme.colors.primary, theme.colors.primaryPressed]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
-            style={[StyleSheet.absoluteFillObject, { borderRadius: rounded ? 100 : RADIUS * 2 }]}
+            style={[ABSOLUTE_FILL, { borderRadius: rounded ? 100 : RADIUS * 2 }]}
           />
         ) : null}
         {loading ? (

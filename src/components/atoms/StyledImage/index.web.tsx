@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Image, ImageProps, ImageSourcePropType, StyleSheet, View, ViewStyle } from "react-native";
+import { ABSOLUTE_FILL } from "../../../theme";
 import { useTheme } from "../../../theme/ThemeContext";
 
 type StyledImageProps = ImageProps & {
@@ -31,7 +32,7 @@ const StyledImage = ({ style, source, placeholderSource, loaderColor: _loaderCol
 const styles = StyleSheet.create({
   container: { overflow: "hidden" },
   // Explicit size overrides the intrinsic width/height react-native-web applies to local require() assets.
-  image: { ...StyleSheet.absoluteFillObject, width: "100%", height: "100%" },
+  image: { ...ABSOLUTE_FILL, width: "100%", height: "100%" },
 });
 
 export default StyledImage;

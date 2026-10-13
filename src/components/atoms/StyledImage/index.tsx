@@ -1,6 +1,7 @@
 import { Image, type ImageProps, type ImageSource, type ImageStyle } from "expo-image";
 import React, { useState } from "react";
 import { ActivityIndicator, StyleProp, StyleSheet, View } from "react-native";
+import { ABSOLUTE_FILL } from "../../../theme";
 import { useTheme } from "../../../theme/ThemeContext";
 
 type StyledImageProps = ImageProps & {
@@ -43,7 +44,7 @@ const StyledImage = ({ style, source, placeholderSource, loaderColor, ...props }
 const styles = StyleSheet.create({
   container: { overflow: "hidden" },
   loaderContainer: {
-    ...StyleSheet.absoluteFillObject,
+    ...ABSOLUTE_FILL,
     justifyContent: "center",
     alignItems: "center",
   },
