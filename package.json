@@ -1,6 +1,6 @@
 {
   "name": "@crownone/ui",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Crown One shared UI component library for React Native / Expo",
   "main": "./lib/commonjs/index.js",
   "module": "./lib/module/index.js",
