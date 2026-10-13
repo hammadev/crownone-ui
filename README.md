@@ -1352,16 +1352,38 @@ cd ../your-app && npm link @crownone/ui
 
 ## Releasing
 
+Publishing is automated. When a **GitHub release** is published, the [`Publish to npm`](./.github/workflows/publish.yml) workflow builds the package, type-checks it, and publishes it to npm with [provenance](https://docs.npmjs.com/generating-provenance-statements).
+
+**1. Bump the version** (updates `package.json`, commits, and creates a `vX.Y.Z` tag):
+
 ```bash
 npm version patch   # 0.1.2 → 0.1.3  bug fixes
 npm version minor   # 0.1.2 → 0.2.0  new components, backwards compatible
 npm version major   # 0.1.2 → 1.0.0  breaking changes
-
-git push --follow-tags
-npm publish --access public            # add --otp=<code> if 2FA is enabled
 ```
 
-`npm publish` runs the `prepare` script, which builds `lib/` automatically. Only `lib/` and `src/` are published. The `docs/` folder is not.
+**2. Push the commit and the tag:**
+
+```bash
+git push --follow-tags
+```
+
+**3. Create a release from the tag.** Either on GitHub (**Releases → Draft a new release**, choose the tag, then **Publish release**), or from the CLI:
+
+```bash
+gh release create v0.1.3 --generate-notes
+```
+
+The workflow then publishes to npm. Follow it in the **Actions** tab.
+
+| Release type | npm dist-tag | Installed by |
+|---|---|---|
+| Normal release | `latest` | `npm install @crownone/ui` |
+| Pre-release (e.g. `v0.2.0-beta.1`, marked as pre-release on GitHub) | `next` | `npm install @crownone/ui@next` |
+
+> The workflow fails if the release tag doesn't match the `version` in `package.json`. Always create releases from tags made by `npm version`.
+
+Only `lib/`, `src/` and this README are published. The `docs/` and `examples/` folders are not.
 
 ---
 

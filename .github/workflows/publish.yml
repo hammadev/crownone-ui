@@ -1,0 +1,49 @@
+name: Publish to npm
+
+# Runs when a GitHub release is published (not when it's saved as a draft).
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+  id-token: write # npm trusted publishing (OIDC) + provenance
+
+concurrency:
+  group: publish-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Build and publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the release tag
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+          cache: npm
+
+      - name: Verify the release tag matches package.json
+        run: |
+          TAG="${GITHUB_REF_NAME#v}"
+          VERSION="$(node -p "require('./package.json').version")"
+          if [ "$TAG" != "$VERSION" ]; then
+            echo "::error::Release tag '$GITHUB_REF_NAME' does not match package.json version '$VERSION'. Run 'npm version <patch|minor|major>', push the tag, and create the release from it."
+            exit 1
+          fi
+          echo "Publishing version $VERSION"
+
+      - name: Install dependencies and build
+        run: npm ci # also runs `prepare`, which builds lib/
+
+      - name: Type-check
+        run: npm run typecheck
+
+      - name: Publish
+        # Pre-releases (e.g. v0.2.0-beta.1) go to the "next" tag so they aren't installed by default.
+        run: npm publish --access public --provenance --tag ${{ github.event.release.prerelease && 'next' || 'latest' }}
