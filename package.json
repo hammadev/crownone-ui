@@ -32,6 +32,14 @@
     "components"
   ],
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hammadev/crownone-ui.git"
+  },
+  "homepage": "https://github.com/hammadev/crownone-ui#readme",
+  "bugs": {
+    "url": "https://github.com/hammadev/crownone-ui/issues"
+  },
   "peerDependencies": {
     "@expo/vector-icons": ">=13",
     "expo-blur": ">=13",
