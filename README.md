@@ -12,6 +12,8 @@ Themed atoms and molecules with light and dark mode built in, so every Crown One
 ![expo](https://img.shields.io/badge/Expo%20SDK-%E2%89%A5%2050-000020)
 ![typescript](https://img.shields.io/badge/TypeScript-ready-3178C6)
 
+[![Open Playground in Expo Snack](https://img.shields.io/badge/%E2%96%B6%20Open%20Playground-Expo%20Snack-4630EB?logo=expo&logoColor=white)](https://snack.expo.dev/?name=%40crownone%2Fui%20Playground&description=Every%20%40crownone%2Fui%20component%20on%20one%20interactive%20screen&sourceUrl=https%3A%2F%2Fraw.githubusercontent.com%2Fhammadev%2Fcrownone-ui%2Fmain%2Fexamples%2FPlayground.js&dependencies=%40crownone%2Fui,expo-font,expo-blur,expo-image,expo-linear-gradient,react-native-reanimated,react-native-safe-area-context,react-native-size-matters,%40expo%2Fvector-icons)
+
 <br />
 
 <table>
@@ -40,6 +42,7 @@ Themed atoms and molecules with light and dark mode built in, so every Crown One
   - [1. Load the fonts](#1-load-the-fonts)
   - [2. Add the ThemeProvider](#2-add-the-themeprovider)
   - [3. Use a component](#3-use-a-component)
+- [Live Playground](#live-playground)
 - [Components](#components)
 
   | Typography & Media | Actions | Inputs | Feedback | Layout |
@@ -176,6 +179,27 @@ export function Welcome() {
   );
 }
 ```
+
+---
+
+## Live Playground
+
+Try every component without installing anything. The playground runs in [Expo Snack](https://snack.expo.dev): use it in the browser, or scan the QR code with **Expo Go** to run it on your phone.
+
+<p align="center">
+  <a href="https://snack.expo.dev/?name=%40crownone%2Fui%20Playground&description=Every%20%40crownone%2Fui%20component%20on%20one%20interactive%20screen&sourceUrl=https%3A%2F%2Fraw.githubusercontent.com%2Fhammadev%2Fcrownone-ui%2Fmain%2Fexamples%2FPlayground.js&dependencies=%40crownone%2Fui,expo-font,expo-blur,expo-image,expo-linear-gradient,react-native-reanimated,react-native-safe-area-context,react-native-size-matters,%40expo%2Fvector-icons">
+    <img src="https://img.shields.io/badge/%E2%96%B6%20Open%20Playground-Expo%20Snack-4630EB?style=for-the-badge&logo=expo&logoColor=white" alt="Open Playground in Expo Snack">
+  </a>
+</p>
+
+What you can try:
+
+- Switch between **light and dark** mode live.
+- Submit the form empty to see `StyledTextField` and `FieldError` validation.
+- Filter a list with `SearchBar`, select chips, radios, tabs and the dropdown.
+- Toggle the `Skeleton` loading state, open the `BlurModalBackdrop` modal, and use the sticky `BottomActionsBar`.
+
+The playground's source is [`examples/Playground.js`](./examples/Playground.js) in this repo. Snack loads it from the `main` branch and always uses the latest published `@crownone/ui`.
 
 ---
 
@@ -1197,6 +1221,8 @@ cd ../your-app && npm link @crownone/ui
 2. Read colors from `useTheme()` so it works in light and dark mode.
 3. Export it, and any public types, from `src/index.ts`.
 4. Document it in this README with a preview, a usage example and a props table.
+
+**Updating the playground:** edit [`examples/Playground.js`](./examples/Playground.js) and push to `main`; the Snack link picks it up automatically. It imports from the **published** package, so components that exist only in an unreleased version need to be published before they work in the playground. Keep the file plain JavaScript, because Snack loads it as `App.js`.
 
 **Updating the previews:** the images in `docs/images/` are `<component>-light.png` / `<component>-dark.png` pairs. They're captured at 2× from a showcase screen that renders each component in a fixed 420 px frame. Keep the same file names, and replace both the light and dark image whenever a component's appearance changes.
 
