@@ -12,7 +12,7 @@ Themed atoms and molecules with light and dark mode built in, so every Crown One
 ![expo](https://img.shields.io/badge/Expo%20SDK-%E2%89%A5%2050-000020)
 ![typescript](https://img.shields.io/badge/TypeScript-ready-3178C6)
 
-[![Open Playground in Expo Snack](https://img.shields.io/badge/%E2%96%B6%20Open%20Playground-Expo%20Snack-4630EB?logo=expo&logoColor=white)](https://snack.expo.dev/?name=%40crownone%2Fui%20Playground&description=Every%20%40crownone%2Fui%20component%20on%20one%20interactive%20screen&sourceUrl=https%3A%2F%2Fraw.githubusercontent.com%2Fhammadev%2Fcrownone-ui%2Fmain%2Fexamples%2FPlayground.js&dependencies=%40crownone%2Fui,expo-font,expo-blur,expo-image,expo-linear-gradient,react-native-reanimated,react-native-safe-area-context,react-native-size-matters,%40expo%2Fvector-icons)
+[![Open Playground in Expo Snack](https://img.shields.io/badge/%E2%96%B6%20Open%20Playground-Expo%20Snack-4630EB?logo=expo&logoColor=white)](https://snack.expo.dev/?name=%40crownone%2Fui%20Playground&description=Interactive%20playground%20for%20%40crownone%2Fui&files=%7B%22App.js%22%3A%7B%22type%22%3A%22CODE%22%2C%22url%22%3A%22https%3A%2F%2Fraw.githubusercontent.com%2Fhammadev%2Fcrownone-ui%2Fmain%2Fexamples%2FPlayground.js%22%7D%2C%22focus.js%22%3A%7B%22type%22%3A%22CODE%22%2C%22contents%22%3A%22export%20default%20null%3B%5Cn%22%7D%7D&dependencies=%40crownone%2Fui,expo-font,expo-blur,expo-image,expo-linear-gradient,react-native-reanimated,react-native-safe-area-context,react-native-size-matters,%40expo%2Fvector-icons)
 
 <br />
 
@@ -187,7 +187,7 @@ export function Welcome() {
 Try every component without installing anything. The playground runs in [Expo Snack](https://snack.expo.dev): use it in the browser, or scan the QR code with **Expo Go** to run it on your phone.
 
 <p align="center">
-  <a href="https://snack.expo.dev/?name=%40crownone%2Fui%20Playground&description=Every%20%40crownone%2Fui%20component%20on%20one%20interactive%20screen&sourceUrl=https%3A%2F%2Fraw.githubusercontent.com%2Fhammadev%2Fcrownone-ui%2Fmain%2Fexamples%2FPlayground.js&dependencies=%40crownone%2Fui,expo-font,expo-blur,expo-image,expo-linear-gradient,react-native-reanimated,react-native-safe-area-context,react-native-size-matters,%40expo%2Fvector-icons">
+  <a href="https://snack.expo.dev/?name=%40crownone%2Fui%20Playground&description=Interactive%20playground%20for%20%40crownone%2Fui&files=%7B%22App.js%22%3A%7B%22type%22%3A%22CODE%22%2C%22url%22%3A%22https%3A%2F%2Fraw.githubusercontent.com%2Fhammadev%2Fcrownone-ui%2Fmain%2Fexamples%2FPlayground.js%22%7D%2C%22focus.js%22%3A%7B%22type%22%3A%22CODE%22%2C%22contents%22%3A%22export%20default%20null%3B%5Cn%22%7D%7D&dependencies=%40crownone%2Fui,expo-font,expo-blur,expo-image,expo-linear-gradient,react-native-reanimated,react-native-safe-area-context,react-native-size-matters,%40expo%2Fvector-icons">
     <img src="https://img.shields.io/badge/%E2%96%B6%20Open%20Playground-Expo%20Snack-4630EB?style=for-the-badge&logo=expo&logoColor=white" alt="Open Playground in Expo Snack">
   </a>
 </p>
@@ -198,6 +198,8 @@ What you can try:
 - Submit the form empty to see `StyledTextField` and `FieldError` validation.
 - Filter a list with `SearchBar`, select chips, radios, tabs and the dropdown.
 - Toggle the `Skeleton` loading state, open the `BlurModalBackdrop` modal, and use the sticky `BottomActionsBar`.
+
+Each component below also has a **▶ Try it live** button. It opens the same playground, scrolled to that component's section with the section outlined.
 
 The playground's source is [`examples/Playground.js`](./examples/Playground.js) in this repo. Snack loads it from the `main` branch and always uses the latest published `@crownone/ui`.
 
@@ -222,6 +224,12 @@ The base text component. It supports a full typographic scale, shorthand props f
     <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/hammadev/crownone-ui/main/docs/images/text-dark.png">
     <img src="https://raw.githubusercontent.com/hammadev/crownone-ui/main/docs/images/text-light.png" alt="StyledText typographic scale and colors" width="420">
   </picture>
+</p>
+
+<p align="center">
+  <a href="https://snack.expo.dev/?name=%40crownone%2Fui%20%E2%80%94%20StyledText&description=Interactive%20playground%20for%20%40crownone%2Fui&files=%7B%22App.js%22%3A%7B%22type%22%3A%22CODE%22%2C%22url%22%3A%22https%3A%2F%2Fraw.githubusercontent.com%2Fhammadev%2Fcrownone-ui%2Fmain%2Fexamples%2FPlayground.js%22%7D%2C%22focus.js%22%3A%7B%22type%22%3A%22CODE%22%2C%22contents%22%3A%22export%20default%20%27StyledText%27%3B%5Cn%22%7D%7D&dependencies=%40crownone%2Fui,expo-font,expo-blur,expo-image,expo-linear-gradient,react-native-reanimated,react-native-safe-area-context,react-native-size-matters,%40expo%2Fvector-icons">
+    <img src="https://img.shields.io/badge/%E2%96%B6%20Try%20StyledText%20live-Expo%20Snack-4630EB?logo=expo&logoColor=white" alt="Try StyledText live in Expo Snack">
+  </a>
 </p>
 
 ```tsx
@@ -279,6 +287,12 @@ An image component that shows a loading indicator and falls back to a placeholde
   </picture>
 </p>
 
+<p align="center">
+  <a href="https://snack.expo.dev/?name=%40crownone%2Fui%20%E2%80%94%20StyledImage&description=Interactive%20playground%20for%20%40crownone%2Fui&files=%7B%22App.js%22%3A%7B%22type%22%3A%22CODE%22%2C%22url%22%3A%22https%3A%2F%2Fraw.githubusercontent.com%2Fhammadev%2Fcrownone-ui%2Fmain%2Fexamples%2FPlayground.js%22%7D%2C%22focus.js%22%3A%7B%22type%22%3A%22CODE%22%2C%22contents%22%3A%22export%20default%20%27StyledImage%27%3B%5Cn%22%7D%7D&dependencies=%40crownone%2Fui,expo-font,expo-blur,expo-image,expo-linear-gradient,react-native-reanimated,react-native-safe-area-context,react-native-size-matters,%40expo%2Fvector-icons">
+    <img src="https://img.shields.io/badge/%E2%96%B6%20Try%20StyledImage%20live-Expo%20Snack-4630EB?logo=expo&logoColor=white" alt="Try StyledImage live in Expo Snack">
+  </a>
+</p>
+
 ```tsx
 import { StyledImage } from '@crownone/ui';
 
@@ -325,6 +339,12 @@ A button with a gradient primary style, a press animation, a loading state and i
     <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/hammadev/crownone-ui/main/docs/images/button-dark.png">
     <img src="https://raw.githubusercontent.com/hammadev/crownone-ui/main/docs/images/button-light.png" alt="StyledButton variants and states" width="420">
   </picture>
+</p>
+
+<p align="center">
+  <a href="https://snack.expo.dev/?name=%40crownone%2Fui%20%E2%80%94%20StyledButton&description=Interactive%20playground%20for%20%40crownone%2Fui&files=%7B%22App.js%22%3A%7B%22type%22%3A%22CODE%22%2C%22url%22%3A%22https%3A%2F%2Fraw.githubusercontent.com%2Fhammadev%2Fcrownone-ui%2Fmain%2Fexamples%2FPlayground.js%22%7D%2C%22focus.js%22%3A%7B%22type%22%3A%22CODE%22%2C%22contents%22%3A%22export%20default%20%27StyledButton%27%3B%5Cn%22%7D%7D&dependencies=%40crownone%2Fui,expo-font,expo-blur,expo-image,expo-linear-gradient,react-native-reanimated,react-native-safe-area-context,react-native-size-matters,%40expo%2Fvector-icons">
+    <img src="https://img.shields.io/badge/%E2%96%B6%20Try%20StyledButton%20live-Expo%20Snack-4630EB?logo=expo&logoColor=white" alt="Try StyledButton live in Expo Snack">
+  </a>
 </p>
 
 ```tsx
@@ -382,6 +402,12 @@ A themed surface for grouping content. It renders as a pressable card when `onPr
   </picture>
 </p>
 
+<p align="center">
+  <a href="https://snack.expo.dev/?name=%40crownone%2Fui%20%E2%80%94%20StyledCard&description=Interactive%20playground%20for%20%40crownone%2Fui&files=%7B%22App.js%22%3A%7B%22type%22%3A%22CODE%22%2C%22url%22%3A%22https%3A%2F%2Fraw.githubusercontent.com%2Fhammadev%2Fcrownone-ui%2Fmain%2Fexamples%2FPlayground.js%22%7D%2C%22focus.js%22%3A%7B%22type%22%3A%22CODE%22%2C%22contents%22%3A%22export%20default%20%27StyledCard%27%3B%5Cn%22%7D%7D&dependencies=%40crownone%2Fui,expo-font,expo-blur,expo-image,expo-linear-gradient,react-native-reanimated,react-native-safe-area-context,react-native-size-matters,%40expo%2Fvector-icons">
+    <img src="https://img.shields.io/badge/%E2%96%B6%20Try%20StyledCard%20live-Expo%20Snack-4630EB?logo=expo&logoColor=white" alt="Try StyledCard live in Expo Snack">
+  </a>
+</p>
+
 ```tsx
 import { AlphabetAvatar, StyledCard, StyledChip, StyledIcon, StyledText } from '@crownone/ui';
 
@@ -429,6 +455,12 @@ A controlled checkbox whose checked and unchecked states follow the theme.
   </picture>
 </p>
 
+<p align="center">
+  <a href="https://snack.expo.dev/?name=%40crownone%2Fui%20%E2%80%94%20StyledCheckbox&description=Interactive%20playground%20for%20%40crownone%2Fui&files=%7B%22App.js%22%3A%7B%22type%22%3A%22CODE%22%2C%22url%22%3A%22https%3A%2F%2Fraw.githubusercontent.com%2Fhammadev%2Fcrownone-ui%2Fmain%2Fexamples%2FPlayground.js%22%7D%2C%22focus.js%22%3A%7B%22type%22%3A%22CODE%22%2C%22contents%22%3A%22export%20default%20%27StyledCheckbox%27%3B%5Cn%22%7D%7D&dependencies=%40crownone%2Fui,expo-font,expo-blur,expo-image,expo-linear-gradient,react-native-reanimated,react-native-safe-area-context,react-native-size-matters,%40expo%2Fvector-icons">
+    <img src="https://img.shields.io/badge/%E2%96%B6%20Try%20StyledCheckbox%20live-Expo%20Snack-4630EB?logo=expo&logoColor=white" alt="Try StyledCheckbox live in Expo Snack">
+  </a>
+</p>
+
 ```tsx
 import { StyledCheckbox, StyledText } from '@crownone/ui';
 
@@ -461,6 +493,12 @@ A radio indicator. It's display-only: keep the selection state in the parent and
     <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/hammadev/crownone-ui/main/docs/images/radio-dark.png">
     <img src="https://raw.githubusercontent.com/hammadev/crownone-ui/main/docs/images/radio-light.png" alt="StyledRadioButton selected, unselected and disabled" width="420">
   </picture>
+</p>
+
+<p align="center">
+  <a href="https://snack.expo.dev/?name=%40crownone%2Fui%20%E2%80%94%20StyledRadioButton&description=Interactive%20playground%20for%20%40crownone%2Fui&files=%7B%22App.js%22%3A%7B%22type%22%3A%22CODE%22%2C%22url%22%3A%22https%3A%2F%2Fraw.githubusercontent.com%2Fhammadev%2Fcrownone-ui%2Fmain%2Fexamples%2FPlayground.js%22%7D%2C%22focus.js%22%3A%7B%22type%22%3A%22CODE%22%2C%22contents%22%3A%22export%20default%20%27StyledRadioButton%27%3B%5Cn%22%7D%7D&dependencies=%40crownone%2Fui,expo-font,expo-blur,expo-image,expo-linear-gradient,react-native-reanimated,react-native-safe-area-context,react-native-size-matters,%40expo%2Fvector-icons">
+    <img src="https://img.shields.io/badge/%E2%96%B6%20Try%20StyledRadioButton%20live-Expo%20Snack-4630EB?logo=expo&logoColor=white" alt="Try StyledRadioButton live in Expo Snack">
+  </a>
 </p>
 
 ```tsx
@@ -499,6 +537,12 @@ A tag or badge with color variants, two sizes and optional press behavior. Use i
     <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/hammadev/crownone-ui/main/docs/images/chip-dark.png">
     <img src="https://raw.githubusercontent.com/hammadev/crownone-ui/main/docs/images/chip-light.png" alt="StyledChip variants and sizes" width="420">
   </picture>
+</p>
+
+<p align="center">
+  <a href="https://snack.expo.dev/?name=%40crownone%2Fui%20%E2%80%94%20StyledChip&description=Interactive%20playground%20for%20%40crownone%2Fui&files=%7B%22App.js%22%3A%7B%22type%22%3A%22CODE%22%2C%22url%22%3A%22https%3A%2F%2Fraw.githubusercontent.com%2Fhammadev%2Fcrownone-ui%2Fmain%2Fexamples%2FPlayground.js%22%7D%2C%22focus.js%22%3A%7B%22type%22%3A%22CODE%22%2C%22contents%22%3A%22export%20default%20%27StyledChip%27%3B%5Cn%22%7D%7D&dependencies=%40crownone%2Fui,expo-font,expo-blur,expo-image,expo-linear-gradient,react-native-reanimated,react-native-safe-area-context,react-native-size-matters,%40expo%2Fvector-icons">
+    <img src="https://img.shields.io/badge/%E2%96%B6%20Try%20StyledChip%20live-Expo%20Snack-4630EB?logo=expo&logoColor=white" alt="Try StyledChip live in Expo Snack">
+  </a>
 </p>
 
 ```tsx
@@ -548,6 +592,12 @@ A wrapper around [`MaterialCommunityIcons`](https://pictogrammers.com/library/md
   </picture>
 </p>
 
+<p align="center">
+  <a href="https://snack.expo.dev/?name=%40crownone%2Fui%20%E2%80%94%20StyledIcon&description=Interactive%20playground%20for%20%40crownone%2Fui&files=%7B%22App.js%22%3A%7B%22type%22%3A%22CODE%22%2C%22url%22%3A%22https%3A%2F%2Fraw.githubusercontent.com%2Fhammadev%2Fcrownone-ui%2Fmain%2Fexamples%2FPlayground.js%22%7D%2C%22focus.js%22%3A%7B%22type%22%3A%22CODE%22%2C%22contents%22%3A%22export%20default%20%27StyledIcon%27%3B%5Cn%22%7D%7D&dependencies=%40crownone%2Fui,expo-font,expo-blur,expo-image,expo-linear-gradient,react-native-reanimated,react-native-safe-area-context,react-native-size-matters,%40expo%2Fvector-icons">
+    <img src="https://img.shields.io/badge/%E2%96%B6%20Try%20StyledIcon%20live-Expo%20Snack-4630EB?logo=expo&logoColor=white" alt="Try StyledIcon live in Expo Snack">
+  </a>
+</p>
+
 ```tsx
 import { StyledIcon, useTheme } from '@crownone/ui';
 
@@ -583,6 +633,12 @@ A text input with a label, a left icon slot, a password visibility toggle and in
     <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/hammadev/crownone-ui/main/docs/images/textfield-dark.png">
     <img src="https://raw.githubusercontent.com/hammadev/crownone-ui/main/docs/images/textfield-light.png" alt="StyledTextField default, error, password and disabled" width="420">
   </picture>
+</p>
+
+<p align="center">
+  <a href="https://snack.expo.dev/?name=%40crownone%2Fui%20%E2%80%94%20StyledTextField&description=Interactive%20playground%20for%20%40crownone%2Fui&files=%7B%22App.js%22%3A%7B%22type%22%3A%22CODE%22%2C%22url%22%3A%22https%3A%2F%2Fraw.githubusercontent.com%2Fhammadev%2Fcrownone-ui%2Fmain%2Fexamples%2FPlayground.js%22%7D%2C%22focus.js%22%3A%7B%22type%22%3A%22CODE%22%2C%22contents%22%3A%22export%20default%20%27StyledTextField%27%3B%5Cn%22%7D%7D&dependencies=%40crownone%2Fui,expo-font,expo-blur,expo-image,expo-linear-gradient,react-native-reanimated,react-native-safe-area-context,react-native-size-matters,%40expo%2Fvector-icons">
+    <img src="https://img.shields.io/badge/%E2%96%B6%20Try%20StyledTextField%20live-Expo%20Snack-4630EB?logo=expo&logoColor=white" alt="Try StyledTextField live in Expo Snack">
+  </a>
 </p>
 
 ```tsx
@@ -642,6 +698,12 @@ A cross-platform select. It opens a native `ActionSheetIOS` on iOS and a modal l
     <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/hammadev/crownone-ui/main/docs/images/dropdown-dark.png">
     <img src="https://raw.githubusercontent.com/hammadev/crownone-ui/main/docs/images/dropdown-light.png" alt="StyledDropdown placeholder, selected and error" width="420">
   </picture>
+</p>
+
+<p align="center">
+  <a href="https://snack.expo.dev/?name=%40crownone%2Fui%20%E2%80%94%20StyledDropdown&description=Interactive%20playground%20for%20%40crownone%2Fui&files=%7B%22App.js%22%3A%7B%22type%22%3A%22CODE%22%2C%22url%22%3A%22https%3A%2F%2Fraw.githubusercontent.com%2Fhammadev%2Fcrownone-ui%2Fmain%2Fexamples%2FPlayground.js%22%7D%2C%22focus.js%22%3A%7B%22type%22%3A%22CODE%22%2C%22contents%22%3A%22export%20default%20%27StyledDropdown%27%3B%5Cn%22%7D%7D&dependencies=%40crownone%2Fui,expo-font,expo-blur,expo-image,expo-linear-gradient,react-native-reanimated,react-native-safe-area-context,react-native-size-matters,%40expo%2Fvector-icons">
+    <img src="https://img.shields.io/badge/%E2%96%B6%20Try%20StyledDropdown%20live-Expo%20Snack-4630EB?logo=expo&logoColor=white" alt="Try StyledDropdown live in Expo Snack">
+  </a>
 </p>
 
 ```tsx
@@ -712,6 +774,12 @@ A segmented tab bar with optional count badges.
   </picture>
 </p>
 
+<p align="center">
+  <a href="https://snack.expo.dev/?name=%40crownone%2Fui%20%E2%80%94%20StyledTabs&description=Interactive%20playground%20for%20%40crownone%2Fui&files=%7B%22App.js%22%3A%7B%22type%22%3A%22CODE%22%2C%22url%22%3A%22https%3A%2F%2Fraw.githubusercontent.com%2Fhammadev%2Fcrownone-ui%2Fmain%2Fexamples%2FPlayground.js%22%7D%2C%22focus.js%22%3A%7B%22type%22%3A%22CODE%22%2C%22contents%22%3A%22export%20default%20%27StyledTabs%27%3B%5Cn%22%7D%7D&dependencies=%40crownone%2Fui,expo-font,expo-blur,expo-image,expo-linear-gradient,react-native-reanimated,react-native-safe-area-context,react-native-size-matters,%40expo%2Fvector-icons">
+    <img src="https://img.shields.io/badge/%E2%96%B6%20Try%20StyledTabs%20live-Expo%20Snack-4630EB?logo=expo&logoColor=white" alt="Try StyledTabs live in Expo Snack">
+  </a>
+</p>
+
 ```tsx
 import { StyledTabs } from '@crownone/ui';
 import type { TabItem } from '@crownone/ui';
@@ -751,6 +819,12 @@ An inline alert banner with an icon, an optional title, a message and a descript
     <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/hammadev/crownone-ui/main/docs/images/statuscard-dark.png">
     <img src="https://raw.githubusercontent.com/hammadev/crownone-ui/main/docs/images/statuscard-light.png" alt="StatusCard success, error, warning and info" width="420">
   </picture>
+</p>
+
+<p align="center">
+  <a href="https://snack.expo.dev/?name=%40crownone%2Fui%20%E2%80%94%20StatusCard&description=Interactive%20playground%20for%20%40crownone%2Fui&files=%7B%22App.js%22%3A%7B%22type%22%3A%22CODE%22%2C%22url%22%3A%22https%3A%2F%2Fraw.githubusercontent.com%2Fhammadev%2Fcrownone-ui%2Fmain%2Fexamples%2FPlayground.js%22%7D%2C%22focus.js%22%3A%7B%22type%22%3A%22CODE%22%2C%22contents%22%3A%22export%20default%20%27StatusCard%27%3B%5Cn%22%7D%7D&dependencies=%40crownone%2Fui,expo-font,expo-blur,expo-image,expo-linear-gradient,react-native-reanimated,react-native-safe-area-context,react-native-size-matters,%40expo%2Fvector-icons">
+    <img src="https://img.shields.io/badge/%E2%96%B6%20Try%20StatusCard%20live-Expo%20Snack-4630EB?logo=expo&logoColor=white" alt="Try StatusCard live in Expo Snack">
+  </a>
 </p>
 
 ```tsx
@@ -799,6 +873,12 @@ A circular avatar showing the first letter of a name. The background color is de
   </picture>
 </p>
 
+<p align="center">
+  <a href="https://snack.expo.dev/?name=%40crownone%2Fui%20%E2%80%94%20AlphabetAvatar&description=Interactive%20playground%20for%20%40crownone%2Fui&files=%7B%22App.js%22%3A%7B%22type%22%3A%22CODE%22%2C%22url%22%3A%22https%3A%2F%2Fraw.githubusercontent.com%2Fhammadev%2Fcrownone-ui%2Fmain%2Fexamples%2FPlayground.js%22%7D%2C%22focus.js%22%3A%7B%22type%22%3A%22CODE%22%2C%22contents%22%3A%22export%20default%20%27AlphabetAvatar%27%3B%5Cn%22%7D%7D&dependencies=%40crownone%2Fui,expo-font,expo-blur,expo-image,expo-linear-gradient,react-native-reanimated,react-native-safe-area-context,react-native-size-matters,%40expo%2Fvector-icons">
+    <img src="https://img.shields.io/badge/%E2%96%B6%20Try%20AlphabetAvatar%20live-Expo%20Snack-4630EB?logo=expo&logoColor=white" alt="Try AlphabetAvatar live in Expo Snack">
+  </a>
+</p>
+
 ```tsx
 import { AlphabetAvatar } from '@crownone/ui';
 
@@ -826,6 +906,12 @@ A thin wrapper around `ActivityIndicator` that renders only while `loading` is `
     <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/hammadev/crownone-ui/main/docs/images/loading-dark.png">
     <img src="https://raw.githubusercontent.com/hammadev/crownone-ui/main/docs/images/loading-light.png" alt="LoadingComponent sizes and colors" width="420">
   </picture>
+</p>
+
+<p align="center">
+  <a href="https://snack.expo.dev/?name=%40crownone%2Fui%20%E2%80%94%20LoadingComponent&description=Interactive%20playground%20for%20%40crownone%2Fui&files=%7B%22App.js%22%3A%7B%22type%22%3A%22CODE%22%2C%22url%22%3A%22https%3A%2F%2Fraw.githubusercontent.com%2Fhammadev%2Fcrownone-ui%2Fmain%2Fexamples%2FPlayground.js%22%7D%2C%22focus.js%22%3A%7B%22type%22%3A%22CODE%22%2C%22contents%22%3A%22export%20default%20%27LoadingComponent%27%3B%5Cn%22%7D%7D&dependencies=%40crownone%2Fui,expo-font,expo-blur,expo-image,expo-linear-gradient,react-native-reanimated,react-native-safe-area-context,react-native-size-matters,%40expo%2Fvector-icons">
+    <img src="https://img.shields.io/badge/%E2%96%B6%20Try%20LoadingComponent%20live-Expo%20Snack-4630EB?logo=expo&logoColor=white" alt="Try LoadingComponent live in Expo Snack">
+  </a>
 </p>
 
 ```tsx
@@ -860,6 +946,12 @@ A validation message for a form field. Renders nothing when `message` is empty.
   </picture>
 </p>
 
+<p align="center">
+  <a href="https://snack.expo.dev/?name=%40crownone%2Fui%20%E2%80%94%20FieldError&description=Interactive%20playground%20for%20%40crownone%2Fui&files=%7B%22App.js%22%3A%7B%22type%22%3A%22CODE%22%2C%22url%22%3A%22https%3A%2F%2Fraw.githubusercontent.com%2Fhammadev%2Fcrownone-ui%2Fmain%2Fexamples%2FPlayground.js%22%7D%2C%22focus.js%22%3A%7B%22type%22%3A%22CODE%22%2C%22contents%22%3A%22export%20default%20%27FieldError%27%3B%5Cn%22%7D%7D&dependencies=%40crownone%2Fui,expo-font,expo-blur,expo-image,expo-linear-gradient,react-native-reanimated,react-native-safe-area-context,react-native-size-matters,%40expo%2Fvector-icons">
+    <img src="https://img.shields.io/badge/%E2%96%B6%20Try%20FieldError%20live-Expo%20Snack-4630EB?logo=expo&logoColor=white" alt="Try FieldError live in Expo Snack">
+  </a>
+</p>
+
 ```tsx
 import { FieldError } from '@crownone/ui';
 
@@ -882,6 +974,12 @@ A horizontal rule with a centered label. It's commonly used to separate alternat
     <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/hammadev/crownone-ui/main/docs/images/ordivider-dark.png">
     <img src="https://raw.githubusercontent.com/hammadev/crownone-ui/main/docs/images/ordivider-light.png" alt="OrDivider between buttons" width="420">
   </picture>
+</p>
+
+<p align="center">
+  <a href="https://snack.expo.dev/?name=%40crownone%2Fui%20%E2%80%94%20OrDivider&description=Interactive%20playground%20for%20%40crownone%2Fui&files=%7B%22App.js%22%3A%7B%22type%22%3A%22CODE%22%2C%22url%22%3A%22https%3A%2F%2Fraw.githubusercontent.com%2Fhammadev%2Fcrownone-ui%2Fmain%2Fexamples%2FPlayground.js%22%7D%2C%22focus.js%22%3A%7B%22type%22%3A%22CODE%22%2C%22contents%22%3A%22export%20default%20%27OrDivider%27%3B%5Cn%22%7D%7D&dependencies=%40crownone%2Fui,expo-font,expo-blur,expo-image,expo-linear-gradient,react-native-reanimated,react-native-safe-area-context,react-native-size-matters,%40expo%2Fvector-icons">
+    <img src="https://img.shields.io/badge/%E2%96%B6%20Try%20OrDivider%20live-Expo%20Snack-4630EB?logo=expo&logoColor=white" alt="Try OrDivider live in Expo Snack">
+  </a>
 </p>
 
 ```tsx
@@ -908,6 +1006,12 @@ A pulsing placeholder for loading states. Give it a shape and a background color
     <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/hammadev/crownone-ui/main/docs/images/skeleton-dark.png">
     <img src="https://raw.githubusercontent.com/hammadev/crownone-ui/main/docs/images/skeleton-light.png" alt="Skeleton list placeholder" width="420">
   </picture>
+</p>
+
+<p align="center">
+  <a href="https://snack.expo.dev/?name=%40crownone%2Fui%20%E2%80%94%20Skeleton&description=Interactive%20playground%20for%20%40crownone%2Fui&files=%7B%22App.js%22%3A%7B%22type%22%3A%22CODE%22%2C%22url%22%3A%22https%3A%2F%2Fraw.githubusercontent.com%2Fhammadev%2Fcrownone-ui%2Fmain%2Fexamples%2FPlayground.js%22%7D%2C%22focus.js%22%3A%7B%22type%22%3A%22CODE%22%2C%22contents%22%3A%22export%20default%20%27Skeleton%27%3B%5Cn%22%7D%7D&dependencies=%40crownone%2Fui,expo-font,expo-blur,expo-image,expo-linear-gradient,react-native-reanimated,react-native-safe-area-context,react-native-size-matters,%40expo%2Fvector-icons">
+    <img src="https://img.shields.io/badge/%E2%96%B6%20Try%20Skeleton%20live-Expo%20Snack-4630EB?logo=expo&logoColor=white" alt="Try Skeleton live in Expo Snack">
+  </a>
 </p>
 
 ```tsx
@@ -949,6 +1053,12 @@ A blurred action bar that sticks to the bottom of the screen and respects the sa
     <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/hammadev/crownone-ui/main/docs/images/bottomactionsbar-dark.png">
     <img src="https://raw.githubusercontent.com/hammadev/crownone-ui/main/docs/images/bottomactionsbar-light.png" alt="BottomActionsBar with Reject and Approve" width="420">
   </picture>
+</p>
+
+<p align="center">
+  <a href="https://snack.expo.dev/?name=%40crownone%2Fui%20%E2%80%94%20BottomActionsBar&description=Interactive%20playground%20for%20%40crownone%2Fui&files=%7B%22App.js%22%3A%7B%22type%22%3A%22CODE%22%2C%22url%22%3A%22https%3A%2F%2Fraw.githubusercontent.com%2Fhammadev%2Fcrownone-ui%2Fmain%2Fexamples%2FPlayground.js%22%7D%2C%22focus.js%22%3A%7B%22type%22%3A%22CODE%22%2C%22contents%22%3A%22export%20default%20%27BottomActionsBar%27%3B%5Cn%22%7D%7D&dependencies=%40crownone%2Fui,expo-font,expo-blur,expo-image,expo-linear-gradient,react-native-reanimated,react-native-safe-area-context,react-native-size-matters,%40expo%2Fvector-icons">
+    <img src="https://img.shields.io/badge/%E2%96%B6%20Try%20BottomActionsBar%20live-Expo%20Snack-4630EB?logo=expo&logoColor=white" alt="Try BottomActionsBar live in Expo Snack">
+  </a>
 </p>
 
 ```tsx
@@ -1007,6 +1117,12 @@ A full-screen blurred backdrop for modals and overlays. Taps on the backdrop cal
   </picture>
 </p>
 
+<p align="center">
+  <a href="https://snack.expo.dev/?name=%40crownone%2Fui%20%E2%80%94%20BlurModalBackdrop&description=Interactive%20playground%20for%20%40crownone%2Fui&files=%7B%22App.js%22%3A%7B%22type%22%3A%22CODE%22%2C%22url%22%3A%22https%3A%2F%2Fraw.githubusercontent.com%2Fhammadev%2Fcrownone-ui%2Fmain%2Fexamples%2FPlayground.js%22%7D%2C%22focus.js%22%3A%7B%22type%22%3A%22CODE%22%2C%22contents%22%3A%22export%20default%20%27BlurModalBackdrop%27%3B%5Cn%22%7D%7D&dependencies=%40crownone%2Fui,expo-font,expo-blur,expo-image,expo-linear-gradient,react-native-reanimated,react-native-safe-area-context,react-native-size-matters,%40expo%2Fvector-icons">
+    <img src="https://img.shields.io/badge/%E2%96%B6%20Try%20BlurModalBackdrop%20live-Expo%20Snack-4630EB?logo=expo&logoColor=white" alt="Try BlurModalBackdrop live in Expo Snack">
+  </a>
+</p>
+
 ```tsx
 import { BlurModalBackdrop, StyledButton, StyledText, useTheme } from '@crownone/ui';
 import { Modal, View } from 'react-native';
@@ -1041,6 +1157,12 @@ A search input with a magnifier icon, built on `StyledTextField`.
     <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/hammadev/crownone-ui/main/docs/images/searchbar-dark.png">
     <img src="https://raw.githubusercontent.com/hammadev/crownone-ui/main/docs/images/searchbar-light.png" alt="SearchBar" width="420">
   </picture>
+</p>
+
+<p align="center">
+  <a href="https://snack.expo.dev/?name=%40crownone%2Fui%20%E2%80%94%20SearchBar&description=Interactive%20playground%20for%20%40crownone%2Fui&files=%7B%22App.js%22%3A%7B%22type%22%3A%22CODE%22%2C%22url%22%3A%22https%3A%2F%2Fraw.githubusercontent.com%2Fhammadev%2Fcrownone-ui%2Fmain%2Fexamples%2FPlayground.js%22%7D%2C%22focus.js%22%3A%7B%22type%22%3A%22CODE%22%2C%22contents%22%3A%22export%20default%20%27SearchBar%27%3B%5Cn%22%7D%7D&dependencies=%40crownone%2Fui,expo-font,expo-blur,expo-image,expo-linear-gradient,react-native-reanimated,react-native-safe-area-context,react-native-size-matters,%40expo%2Fvector-icons">
+    <img src="https://img.shields.io/badge/%E2%96%B6%20Try%20SearchBar%20live-Expo%20Snack-4630EB?logo=expo&logoColor=white" alt="Try SearchBar live in Expo Snack">
+  </a>
 </p>
 
 ```tsx
@@ -1222,7 +1344,7 @@ cd ../your-app && npm link @crownone/ui
 3. Export it, and any public types, from `src/index.ts`.
 4. Document it in this README with a preview, a usage example and a props table.
 
-**Updating the playground:** edit [`examples/Playground.js`](./examples/Playground.js) and push to `main`; the Snack link picks it up automatically. It imports from the **published** package, so components that exist only in an unreleased version need to be published before they work in the playground. Keep the file plain JavaScript, because Snack loads it as `App.js`.
+**Updating the playground:** edit [`examples/Playground.js`](./examples/Playground.js) and push to `main`; the Snack link picks it up automatically. It imports from the **published** package, so components that exist only in an unreleased version need to be published before they work in the playground. Keep the file plain JavaScript, because Snack loads it as `App.js`. The per-component links pass a `focus.js` file naming the component, and the playground scrolls to the section whose `components` list contains that name. When you add a component, add its name to a section's `components` prop and add a link under its preview here.
 
 **Updating the previews:** the images in `docs/images/` are `<component>-light.png` / `<component>-dark.png` pairs. They're captured at 2× from a showcase screen that renders each component in a fixed 420 px frame. Keep the same file names, and replace both the light and dark image whenever a component's appearance changes.
 

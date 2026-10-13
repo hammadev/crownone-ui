@@ -4,9 +4,12 @@
  * Every component in the library on one screen. Toggle light/dark mode at the
  * top, interact with anything, and edit this file to experiment.
  *
+ * `focus.js` names a component to jump to (e.g. 'StyledButton'). The README's
+ * per-component "Try it live" links set it so the playground opens on that section.
+ *
  * Docs: https://github.com/hammadev/crownone-ui
  */
-import React, { useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { Modal, Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useFonts } from 'expo-font';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
@@ -34,6 +37,7 @@ import {
   ThemeProvider,
   useTheme,
 } from '@crownone/ui';
+import FOCUS from './focus';
 
 // The library expects Inter under these family names on iOS/Android.
 // Loaded from a CDN so the playground needs no local font files.
@@ -76,6 +80,9 @@ const COUNTRIES = [
 
 const CHIP_FILTERS = ['All', 'Pending', 'Approved', 'Rejected'];
 
+// Lets each section report its position so the playground can scroll to FOCUS.
+const FocusContext = createContext({ focus: null, onSectionLayout: () => {} });
+
 export default function App() {
   const [fontsLoaded] = useFonts(INTER_FONTS);
   const [mode, setMode] = useState('light');
@@ -97,6 +104,21 @@ function Playground({ mode, setMode }) {
   const [toast, setToast] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [barHeight, setBarHeight] = useState(0);
+  const scrollRef = useRef(null);
+  const hasScrolledToFocus = useRef(false);
+  const [focusY, setFocusY] = useState(null);
+
+  const onSectionLayout = (components, y) => {
+    if (FOCUS && focusY === null && components.includes(FOCUS)) setFocusY(y);
+  };
+
+  // Scroll once the bar height is known: it pads the content, so sections near the
+  // end can only scroll into place after that padding exists.
+  useEffect(() => {
+    if (focusY === null || !barHeight || hasScrolledToFocus.current) return;
+    hasScrolledToFocus.current = true;
+    requestAnimationFrame(() => scrollRef.current?.scrollTo({ y: Math.max(0, focusY - 12), animated: true }));
+  }, [focusY, barHeight]);
 
   useEffect(() => {
     if (!toast) return;
@@ -109,34 +131,38 @@ function Playground({ mode, setMode }) {
 
   return (
     <SafeAreaView edges={['top']} style={[styles.screen, { backgroundColor: theme.colors.backgroundSecondary }]}>
-      <ScrollView contentContainerStyle={[styles.content, { paddingBottom: barHeight + 24 }]}>
-        <View style={styles.header}>
-          <StyledText h4>@crownone/ui</StyledText>
-          <StyledText small textColor="textMuted">
-            Interactive playground — every component, live.
-          </StyledText>
-        </View>
+      <FocusContext.Provider value={{ focus: FOCUS, onSectionLayout }}>
+        <ScrollView ref={scrollRef} contentContainerStyle={[styles.content, { paddingBottom: barHeight + 24 }]}>
+          <View style={styles.header}>
+            <StyledText h4>@crownone/ui</StyledText>
+            <StyledText small textColor="textMuted">
+              Interactive playground — every component, live.
+            </StyledText>
+          </View>
 
-        <StyledTabs
-          activeKey={mode}
-          onTabChange={setMode}
-          tabs={[
-            { key: 'light', label: '☀️  Light' },
-            { key: 'dark', label: '🌙  Dark' },
-          ]}
-        />
+          <StyledTabs
+            activeKey={mode}
+            onTabChange={setMode}
+            tabs={[
+              { key: 'light', label: '☀️  Light' },
+              { key: 'dark', label: '🌙  Dark' },
+            ]}
+          />
 
-        <TypographySection />
-        <ButtonsSection notify={notify} />
-        <ChipsSection />
-        <FormSection notify={notify} />
-        <SelectionSection />
-        <SearchSection />
-        <FeedbackSection notify={notify} />
-        <LoadingSection />
-        <MediaSection />
-        <ModalSection onOpen={() => setModalVisible(true)} />
-      </ScrollView>
+          <TypographySection />
+          <ButtonsSection notify={notify} />
+          <CardSection notify={notify} />
+          <ChipsSection />
+          <FormSection notify={notify} />
+          <SelectionSection />
+          <SearchSection />
+          <FeedbackSection notify={notify} />
+          <LoadingSection />
+          <MediaSection />
+          <ModalSection onOpen={() => setModalVisible(true)} />
+          <ActionsBarSection />
+        </ScrollView>
+      </FocusContext.Provider>
 
       {toast ? (
         <View
@@ -178,23 +204,34 @@ function Playground({ mode, setMode }) {
  * Sections
  * ------------------------------------------------------------------------- */
 
-function Section({ title, subtitle, children }) {
+function Section({ title, subtitle, components, children }) {
+  const theme = useTheme();
+  const { focus, onSectionLayout } = useContext(FocusContext);
+  const isFocused = Boolean(focus) && components.includes(focus);
+
   return (
-    <StyledCard style={styles.section}>
-      <StyledText variant="bodyLargeBold">{title}</StyledText>
-      {subtitle ? (
-        <StyledText small textColor="textMuted">
-          {subtitle}
-        </StyledText>
-      ) : null}
-      <View style={styles.sectionBody}>{children}</View>
-    </StyledCard>
+    <View onLayout={(e) => onSectionLayout(components, e.nativeEvent.layout.y)}>
+      <StyledCard
+        style={[styles.section, isFocused && { borderColor: theme.colors.primary, borderWidth: 2 }]}
+      >
+        <View style={styles.sectionTitle}>
+          <StyledText variant="bodyLargeBold" style={styles.flex}>{title}</StyledText>
+          {isFocused ? <StyledChip label={`▶ ${focus}`} variant="primary" size="sm" /> : null}
+        </View>
+        {subtitle ? (
+          <StyledText small textColor="textMuted">
+            {subtitle}
+          </StyledText>
+        ) : null}
+        <View style={styles.sectionBody}>{children}</View>
+      </StyledCard>
+    </View>
   );
 }
 
 function TypographySection() {
   return (
-    <Section title="StyledText" subtitle="Headings, body sizes and theme colors">
+    <Section title="StyledText" components={['StyledText']} subtitle="Headings, body sizes and theme colors">
       <StyledText h2>Heading 2</StyledText>
       <StyledText h4>Heading 4</StyledText>
       <StyledText h6>Heading 6</StyledText>
@@ -222,7 +259,7 @@ function ButtonsSection({ notify }) {
   };
 
   return (
-    <Section title="StyledButton" subtitle="Tap any button — presses are throttled to one per second">
+    <Section title="StyledButton" components={['StyledButton']} subtitle="Tap any button — presses are throttled to one per second">
       <StyledButton title="Primary" onPress={() => notify('Primary pressed')} />
       <View style={styles.row}>
         <StyledButton title="Outline" variant="outline" onPress={() => notify('Outline pressed')} containerStyle={styles.flex} />
@@ -245,11 +282,29 @@ function ButtonsSection({ notify }) {
   );
 }
 
+function CardSection({ notify }) {
+  const theme = useTheme();
+  return (
+    <Section title="StyledCard" components={['StyledCard']} subtitle="Every section here is a StyledCard — this one is pressable">
+      <StyledCard onPress={() => notify('StyledCard pressed')}>
+        <View style={styles.row}>
+          <StyledIcon name="receipt-text-outline" size={24} color={theme.colors.primary} />
+          <View style={styles.flex}>
+            <StyledText variant="bodyMediumBold">Order #CR-10421</StyledText>
+            <StyledText small textColor="textMuted">Tap to open the receipt</StyledText>
+          </View>
+          <StyledIcon name="chevron-right" size={22} />
+        </View>
+      </StyledCard>
+    </Section>
+  );
+}
+
 function ChipsSection() {
   const [filter, setFilter] = useState('All');
 
   return (
-    <Section title="StyledChip" subtitle="Tap a filter chip to select it">
+    <Section title="StyledChip" components={['StyledChip']} subtitle="Tap a filter chip to select it">
       <View style={styles.wrap}>
         {CHIP_FILTERS.map((label) => (
           <StyledChip key={label} label={label} selected={filter === label} onPress={() => setFilter(label)} />
@@ -287,7 +342,10 @@ function FormSection({ notify }) {
   };
 
   return (
-    <Section title="Form inputs" subtitle="StyledTextField · StyledCheckbox · FieldError — submit empty to see validation">
+    <Section
+      title="Form inputs"
+      components={['StyledTextField', 'StyledCheckbox', 'FieldError']}
+      subtitle="StyledTextField · StyledCheckbox · FieldError — submit empty to see validation">
       <StyledTextField
         label="Full name"
         placeholder="Enter your name"
@@ -342,7 +400,10 @@ function SelectionSection() {
   ];
 
   return (
-    <Section title="Selection" subtitle="StyledDropdown · StyledRadioButton · StyledTabs">
+    <Section
+      title="Selection"
+      components={['StyledDropdown', 'StyledRadioButton', 'StyledTabs']}
+      subtitle="StyledDropdown · StyledRadioButton · StyledTabs">
       <StyledDropdown
         items={COUNTRIES}
         value={country}
@@ -384,7 +445,7 @@ function SearchSection() {
   const results = PRODUCTS.filter((p) => p.toLowerCase().includes(query.toLowerCase()));
 
   return (
-    <Section title="SearchBar + AlphabetAvatar" subtitle="Type to filter the list">
+    <Section title="SearchBar + AlphabetAvatar" components={['SearchBar', 'AlphabetAvatar']} subtitle="Type to filter the list">
       <SearchBar value={query} setValue={setQuery} placeholder="Search products..." />
       {results.map((product) => (
         <View key={product} style={styles.row}>
@@ -401,7 +462,7 @@ function SearchSection() {
 
 function FeedbackSection({ notify }) {
   return (
-    <Section title="StatusCard" subtitle="The info card is clickable">
+    <Section title="StatusCard + OrDivider" components={['StatusCard', 'OrDivider']} subtitle="The info card is clickable">
       <StatusCard variant="success" message="Payment completed" description="PKR 12,500 was added to your wallet." />
       <StatusCard variant="error" message="Transaction failed" description="Your card was declined." />
       <StatusCard variant="warning" message="Low balance" description="Top up to keep redeeming rewards." />
@@ -424,7 +485,10 @@ function LoadingSection() {
   const bg = theme.colors.backgroundTertiary;
 
   return (
-    <Section title="Skeleton + LoadingComponent" subtitle="Toggle between the loading and loaded states">
+    <Section
+      title="Skeleton + LoadingComponent"
+      components={['Skeleton', 'LoadingComponent']}
+      subtitle="Toggle between the loading and loaded states">
       <View style={styles.row}>
         <StyledCheckbox value={loading} onChange={setLoading} />
         <StyledText p style={styles.flex}>Loading</StyledText>
@@ -458,7 +522,7 @@ function MediaSection() {
   const icons = ['home-outline', 'bell-outline', 'qrcode-scan', 'wallet-outline', 'cog-outline'];
 
   return (
-    <Section title="StyledImage + StyledIcon" subtitle="Remote image with loader, and themed icons">
+    <Section title="StyledImage + StyledIcon" components={['StyledImage', 'StyledIcon']} subtitle="Remote image with loader, and themed icons">
       <StyledImage
         source={{ uri: 'https://picsum.photos/id/1067/800/400' }}
         contentFit="cover"
@@ -478,8 +542,25 @@ function MediaSection() {
 
 function ModalSection({ onOpen }) {
   return (
-    <Section title="BlurModalBackdrop" subtitle="Opens a modal over a blurred backdrop">
+    <Section title="BlurModalBackdrop" components={['BlurModalBackdrop']} subtitle="Opens a modal over a blurred backdrop">
       <StyledButton title="Open modal" variant="outline" onPress={onOpen} />
+    </Section>
+  );
+}
+
+function ActionsBarSection() {
+  const theme = useTheme();
+  return (
+    <Section
+      title="BottomActionsBar"
+      components={['BottomActionsBar']}
+      subtitle="The blurred bar pinned to the bottom of this screen"
+    >
+      <StyledText p>
+        Reject (danger) sits on the left and Approve (success) on the right. Tap either one. The bar respects the
+        safe area and reports its height, which this screen uses to pad the scroll content.
+      </StyledText>
+      <StyledIcon name="arrow-down" size={28} color={theme.colors.primary} />
     </Section>
   );
 }
@@ -521,6 +602,11 @@ const styles = StyleSheet.create({
   },
   section: {
     gap: 4,
+  },
+  sectionTitle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
   sectionBody: {
     gap: 12,
