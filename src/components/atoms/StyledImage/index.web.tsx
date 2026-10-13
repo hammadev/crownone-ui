@@ -19,7 +19,7 @@ const StyledImage = ({ style, source, placeholderSource, loaderColor: _loaderCol
   return (
     <View style={[styles.container, style]}>
       <Image
-        style={StyleSheet.absoluteFill}
+        style={styles.image}
         source={imageSource}
         onError={() => setImageError(true)}
         {...props}
@@ -30,6 +30,8 @@ const StyledImage = ({ style, source, placeholderSource, loaderColor: _loaderCol
 
 const styles = StyleSheet.create({
   container: { overflow: "hidden" },
+  // Explicit size overrides the intrinsic width/height react-native-web applies to local require() assets.
+  image: { ...StyleSheet.absoluteFillObject, width: "100%", height: "100%" },
 });
 
 export default StyledImage;
