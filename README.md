@@ -51,11 +51,17 @@ Themed atoms and molecules with light and dark mode built in, so every Crown One
   | [StyledImage](#styledimage) | [StyledChip](#styledchip) | [SearchBar](#searchbar) | [LoadingComponent](#loadingcomponent) | [OrDivider](#ordivider) |
   | [StyledIcon](#styledicon) | [StyledTabs](#styledtabs) | [StyledDropdown](#styleddropdown) | [Skeleton](#skeleton) | [BottomActionsBar](#bottomactionsbar) |
   | [AlphabetAvatar](#alphabetavatar) | | [StyledCheckbox](#styledcheckbox) | [FieldError](#fielderror) | [BlurModalBackdrop](#blurmodalbackdrop) |
-  | | | [StyledRadioButton](#styledradiobutton) | | |
+  | | | [StyledRadioButton](#styledradiobutton) | [EmptyListComponent](#emptylistcomponent) | [SummaryValueCard](#summaryvaluecard) |
+  | | | | | [DateGroupedList](#dategroupedlist) |
+  | | | | | [AlphabetGroupedList](#alphabetgroupedlist) |
 
 - [Theming](#theming)
+  - [Translations](#translations)
+- [Utilities](#utilities)
+- [Optional Entry Points](#optional-entry-points)
 - [TypeScript](#typescript)
 - [Peer Dependencies](#peer-dependencies)
+- [Using with AI Assistants](#using-with-ai-assistants)
 - [Contributing](#contributing)
 - [Releasing](#releasing)
 - [License](#license)
@@ -66,13 +72,15 @@ Themed atoms and molecules with light and dark mode built in, so every Crown One
 
 ## Features
 
-- **20 production components.** These are the same components used across the Crown One apps.
+- **25 production components.** These are the same components used across the Crown One apps, including grouped lists and a shareable receipt.
 - **Light and dark mode.** Every component reads its colors from a single theme object.
 - **Custom themes.** Override any color token (e.g. brand colors) without touching component code.
 - **Typed.** Full TypeScript definitions, including generic `StyledDropdown<T>` and `StyledTabs<Key>`.
 - **Cross-platform.** iOS, Android and Web, with platform-specific implementations where needed (e.g. `StyledImage`, `StyledDropdown`).
 - **Built for forms.** `StyledTextField` and `StyledDropdown` read `react-hook-form` errors directly.
-- **Built-in safeguards.** `StyledButton` throttles double-taps, and `BottomActionsBar` respects safe areas.
+- **Built-in safeguards.** Pressable components ignore accidental double-taps, and `BottomActionsBar` respects safe areas.
+- **Translatable.** The few words components render themselves ("Cancel", "OR", "No record found"…) can be translated once through `ThemeProvider`.
+- **Test IDs.** `StyledButton` and `StyledTextField` generate a `testID` from their title or label.
 
 ---
 
@@ -324,7 +332,7 @@ import { StyledImage } from '@crownone/ui';
 | `source` | `ImageSource` | **required** | Remote `{ uri }` or local `require(...)` |
 | `placeholderSource` | `ImageSource` | — | Shown if `source` fails to load |
 | `loaderColor` | `string` | `theme.colors.primary` | Color of the loading spinner |
-| `style` | `ImageStyle` | — | Size, radius, and other styles for the image container |
+| `style` | `StyleProp<ImageStyle>` | — | Size, radius, and other styles for the image container |
 
 All `expo-image` props (`contentFit`, `transition`, `cachePolicy`, …) are also accepted.
 
@@ -332,7 +340,7 @@ All `expo-image` props (`contentFit`, `transition`, `cachePolicy`, …) are also
 
 ### StyledButton
 
-A button with a gradient primary style, a press animation, a loading state and icon slots. Presses are throttled for 1 second to block accidental double-taps.
+A button with a gradient primary style, a press animation, a loading state and icon slots. Presses within 500 ms of the previous one are ignored, to block accidental double-taps.
 
 <p align="center">
   <picture>
@@ -385,9 +393,10 @@ import { StyledButton, StyledIcon } from '@crownone/ui';
 | `leftIcon` | `ReactNode` | — | Element before the label |
 | `rightIcon` | `ReactNode` | — | Element after the label |
 | `textColor` | `string` | variant default | Overrides the label color |
-| `style` | `ViewStyle` | — | Style for the inner button surface |
-| `textStyle` | `TextStyle` | — | Style for the label |
-| `containerStyle` | `ViewStyle` | — | Style for the outer animated wrapper (use this for `flex`, margins) |
+| `style` | `StyleProp<ViewStyle>` | — | Style for the inner button surface |
+| `textStyle` | `StyleProp<TextStyle>` | — | Style for the label |
+| `testID` | `string` | `btn_<title>` | Test ID for end-to-end tests |
+| `containerStyle` | `StyleProp<ViewStyle>` | — | Style for the outer animated wrapper (use this for `flex`, margins) |
 
 ---
 
@@ -439,8 +448,9 @@ import { AlphabetAvatar, StyledCard, StyledChip, StyledIcon, StyledText } from '
 | Prop | Type | Default | Description |
 |---|---|---|---|
 | `children` | `ReactNode` | **required** | Card content |
-| `onPress` | `(e) => void \| null` | — | Makes the card pressable |
-| `style` | `ViewStyle` | — | Additional styles |
+| `onPress` | `() => void \| null` | — | Makes the card pressable |
+| `isPressable` | `boolean` | `true` | Set `false` to keep the card static even with `onPress` |
+| `style` | `StyleProp<ViewStyle>` | — | Additional styles |
 
 ---
 
@@ -480,7 +490,7 @@ const [accepted, setAccepted] = useState(true);
 | `value` | `boolean` | **required** | Checked state |
 | `onChange` | `(value: boolean) => void` | — | Called with the new state |
 | `disabled` | `boolean` | `false` | Dims the checkbox and blocks interaction |
-| `style` | `ViewStyle` | — | Additional styles |
+| `style` | `StyleProp<ViewStyle>` | — | Additional styles |
 
 ---
 
@@ -576,8 +586,8 @@ import { StyledChip } from '@crownone/ui';
 | `selected` | `boolean` | — | Forces the `selected` style |
 | `size` | `"sm" \| "lg"` | `"lg"` | Controls the padding |
 | `onPress` | `() => void` | — | Makes the chip pressable |
-| `chipStyle` | `ViewStyle` | — | Container style |
-| `textStyle` | `TextStyle` | — | Label style |
+| `chipStyle` | `StyleProp<ViewStyle>` | — | Container style |
+| `textStyle` | `StyleProp<TextStyle>` | — | Label style |
 
 ---
 
@@ -620,7 +630,7 @@ const theme = useTheme();
 | `name` | `string` | **required** | Icon name from the [MDI library](https://pictogrammers.com/library/mdi/) |
 | `size` | `number` | **required** | Icon size in dp |
 | `color` | `string` | `theme.colors.icon` | Icon color |
-| `style` | `TextStyle` | — | Additional styles |
+| `style` | `StyleProp<TextStyle>` | — | Additional styles |
 
 ---
 
@@ -672,18 +682,18 @@ import { StyledIcon, StyledTextField } from '@crownone/ui';
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `text` | `string` | — | Controlled value |
-| `setText` | `Dispatch<SetStateAction<string>>` | **required** | State setter |
+| `text` / `value` | `string` | — | Controlled value |
+| `setText` | `Dispatch<SetStateAction<string>> \| (value: string) => void` | — | State setter (or use `onChangeText`) |
 | `label` | `string` | — | Label above the input |
 | `placeholder` | `string` | `""` | Placeholder text |
 | `icon` | `ReactElement` | — | Element on the left side of the input |
 | `formKey` | `string` | `""` | Key to look up in `errors` |
-| `errors` | `Record<string, string \| { message?: string }>` | `{}` | `react-hook-form` errors object |
+| `errors` | `FormErrors` | `{}` | `react-hook-form` `formState.errors`, or `{ [formKey]: message }` |
 | `withPasswordToggle` | `boolean` | `false` | Shows an eye toggle when `secureTextEntry` is set |
 | `disabled` | `boolean` | `false` | Non-editable, muted background |
 | `marginVertical` | `number` | `0` | Vertical spacing |
-| `containerStyle` | `ViewStyle` | — | Outer container style |
-| `inputStyle` | `TextStyle` | — | `TextInput` style |
+| `containerStyle` | `StyleProp<ViewStyle>` | — | Outer container style |
+| `inputStyle` | `StyleProp<TextStyle>` | — | `TextInput` style |
 
 All React Native `TextInput` props are also accepted.
 
@@ -753,12 +763,13 @@ const countries: DropdownItem<string>[] = [
 | `items` | `DropdownItem<T>[]` | **required** | `{ label, value, disabled? }` |
 | `value` | `T \| null \| undefined` | **required** | Selected value |
 | `onChange` | `(value: T) => void` | **required** | Called on selection |
-| `formKey` | `string` | **required** | Key to look up in `errors` |
-| `errors` | `object` | **required** | `react-hook-form` errors object (pass `{}` if unused) |
-| `placeholder` | `string` | `"Select…"` | Shown when nothing is selected |
+| `formKey` | `string` | — | Key to look up in `errors` |
+| `errors` | `FormErrors` | — | `react-hook-form` `formState.errors`, or `{ [formKey]: message }` |
+| `label` | `string` | — | Label above the field |
+| `placeholder` | `string` | `strings.selectPlaceholder` ("Select…") | Shown when nothing is selected |
 | `errorText` | `string` | — | Explicit error message below the input |
 | `disabled` | `boolean` | `false` | Prevents opening |
-| `inputStyle` | `ViewStyle` | — | Style for the input box |
+| `inputStyle` | `StyleProp<ViewStyle>` | — | Style for the input box |
 | `rightAdornment` | `ReactNode` | — | Element on the right side of the input |
 
 ---
@@ -802,11 +813,11 @@ const [activeTab, setActiveTab] = useState<TabKey>('all');
 | `tabs` | `TabItem<Key>[]` | **required** | `{ key, label, badge? }` |
 | `activeKey` | `Key` | **required** | Currently active tab |
 | `onTabChange` | `(key: Key) => void` | **required** | Called when a tab is pressed |
-| `style` | `ViewStyle` | — | Container style |
-| `tabStyle` | `ViewStyle` | — | Style for every tab |
-| `activeTabStyle` | `ViewStyle` | — | Style for the active tab |
-| `textStyle` | `TextStyle` | — | Tab label style |
-| `activeTextStyle` | `TextStyle` | — | Active tab label style |
+| `style` | `StyleProp<ViewStyle>` | — | Container style |
+| `tabStyle` | `StyleProp<ViewStyle>` | — | Style for every tab |
+| `activeTabStyle` | `StyleProp<ViewStyle>` | — | Style for the active tab |
+| `textStyle` | `StyleProp<TextStyle>` | — | Tab label style |
+| `activeTextStyle` | `StyleProp<TextStyle>` | — | Active tab label style |
 
 ---
 
@@ -858,7 +869,7 @@ import { StatusCard } from '@crownone/ui';
 | `clickable` | `boolean` | `false` | Renders as a pressable card |
 | `onPress` | `(e) => void` | — | Press handler when `clickable` |
 | `hintText` | `string` | `"Tap to check details."` | Hint shown when `clickable` |
-| `style` | `ViewStyle` | — | Additional styles |
+| `style` | `StyleProp<ViewStyle>` | — | Additional styles |
 
 ---
 
@@ -893,7 +904,7 @@ import { AlphabetAvatar } from '@crownone/ui';
 |---|---|---|---|
 | `name` | `string` | **required** | Source of the letter and color |
 | `size` | `number` | `44` | Diameter in dp |
-| `style` | `ViewStyle` | — | Outer style |
+| `style` | `StyleProp<ViewStyle>` | — | Outer style |
 
 ---
 
@@ -929,7 +940,7 @@ const theme = useTheme();
 | `loading` | `boolean` | `false` | Renders nothing when `false` |
 | `size` | `"small" \| "large"` | **required** | Spinner size |
 | `color` | `string` | `theme.colors.textInverse` | Spinner color |
-| `style` | `ViewStyle` | — | Additional styles |
+| `style` | `StyleProp<ViewStyle>` | — | Additional styles |
 
 > The default color is `textInverse`, which is meant for spinners on colored surfaces such as buttons. On a plain background, pass `color` explicitly.
 
@@ -993,7 +1004,7 @@ import { OrDivider, StyledButton } from '@crownone/ui';
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `label` | `string` | `"OR"` | Centered text |
+| `label` | `string` | `strings.or` ("OR") | Centered text |
 
 ---
 
@@ -1038,7 +1049,7 @@ function ListItemSkeleton() {
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `style` | `ViewStyle` | — | Shape, size and background color |
+| `style` | `StyleProp<ViewStyle>` | — | Shape, size and background color |
 | `duration` | `number` | `1000` | Length of one pulse in ms |
 | `children` | `ReactNode` | — | Optional content to pulse |
 
@@ -1101,8 +1112,8 @@ const [barHeight, setBarHeight] = useState(0);
 | `horizontalPadding` | `number` | `16` | Horizontal padding |
 | `verticalPadding` | `number` | `8` | Top padding |
 | `onHeight` | `(h: number) => void` | — | Reports the measured height |
-| `style` | `ViewStyle` | — | Outer style |
-| `contentStyle` | `ViewStyle` | — | Inner content style |
+| `style` | `StyleProp<ViewStyle>` | — | Outer style |
+| `contentStyle` | `StyleProp<ViewStyle>` | — | Inner content style |
 
 ---
 
@@ -1144,7 +1155,7 @@ const theme = useTheme();
 |---|---|---|---|
 | `children` | `ReactNode` | **required** | Modal content (taps on it don't dismiss) |
 | `onPress` | `() => void` | — | Called when the backdrop is tapped |
-| `contentStyle` | `ViewStyle` | — | Style for the content wrapper |
+| `contentStyle` | `StyleProp<ViewStyle>` | — | Style for the content wrapper |
 
 ---
 
@@ -1182,10 +1193,106 @@ const [query, setQuery] = useState('');
 | `setValue` | `Dispatch<SetStateAction<string>>` | **required** | State setter |
 | `onChangeText` | `(value: string) => void` | — | Called after every change |
 | `placeholder` | `string` | — | Placeholder text |
-| `containerStyle` | `ViewStyle` | — | Outer container style |
-| `inputStyle` | `TextStyle` | — | `TextInput` style |
+| `containerStyle` | `StyleProp<ViewStyle>` | — | Outer container style |
+| `inputStyle` | `StyleProp<TextStyle>` | — | `TextInput` style |
 
 All React Native `TextInput` props are also accepted.
+
+---
+
+### EmptyListComponent
+
+The standard "No record found" message for empty lists. Use it instead of building an info `StatusCard` by hand.
+
+```tsx
+import { EmptyListComponent } from '@crownone/ui';
+
+<FlatList
+  data={orders}
+  renderItem={renderOrder}
+  ListEmptyComponent={<EmptyListComponent isLoading={isLoading} />}
+/>
+
+// Custom message
+<EmptyListComponent message="No pending requests" />
+```
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `message` | `string` | `strings.noRecordFound` | Text to show |
+| `isLoading` | `boolean` | `false` | Renders nothing while `true`, so the message doesn't flash during a fetch |
+| `style` | `StyleProp<ViewStyle>` | — | No built-in margin: add `marginHorizontal` when the parent has no padding |
+
+---
+
+### SummaryValueCard
+
+A small tinted card with a title and a value, for totals and balances.
+
+```tsx
+import { SummaryValueCard, formatCashWallet } from '@crownone/ui';
+
+<View style={{ flexDirection: 'row', gap: 10 }}>
+  <SummaryValueCard title="Old cash wallet" value={formatCashWallet(12500)} variant="info" />
+  <SummaryValueCard title="New cash wallet" value={formatCashWallet(17500)} variant="success" />
+</View>
+```
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `title` | `string` | **required** | Label above the value |
+| `value` | `string` | **required** | The value, already formatted |
+| `variant` | `'sent' \| 'received' \| 'success' \| 'warning' \| 'danger' \| 'info'` | **required** | Color scheme |
+| `style` | `StyleProp<ViewStyle>` | — | Additional styles |
+
+---
+
+### DateGroupedList
+
+A `SectionList` that groups items by date, with sticky headers showing the date and an item count.
+
+```tsx
+import { DateGroupedList } from '@crownone/ui';
+
+<DateGroupedList
+  items={transactions}
+  getDateKey={(tx) => tx.createdAt}
+  keyExtractor={(tx) => String(tx.id)}
+  renderItem={({ item }) => <TransactionRow item={item} />}
+  refreshing={isFetching}
+  onRefresh={refetch}
+/>
+```
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `items` | `T[]` | **required** | Items to group |
+| `getDateKey` | `(item: T) => string \| number \| null \| undefined` | **required** | Any date-parseable value |
+| `keyExtractor` | `(item: T, index: number) => string` | **required** | Item key |
+| `renderItem` | `SectionListRenderItem<T>` | **required** | Row renderer |
+| `dateFormat` | `string` | `"dddd, DD-MMM-YYYY"` | [dayjs format](https://day.js.org/docs/en/display/format) for headers |
+| `loading` / `refreshing` / `onRefresh` | | — | Loading and pull-to-refresh |
+| `emptyText` | `string` | `strings.noRecordFound` | Message when there are no items |
+| `ListHeaderComponent` / `ListFooterComponent` / `contentContainerStyle` | | — | Passed to the `SectionList` |
+
+---
+
+### AlphabetGroupedList
+
+A `SectionList` that groups items A–Z by the first letter of a name, with sticky letter headers and counts.
+
+```tsx
+import { AlphabetGroupedList } from '@crownone/ui';
+
+<AlphabetGroupedList
+  items={shops}
+  getNameKey={(shop) => shop.name}
+  keyExtractor={(shop) => shop.code}
+  renderItem={({ item }) => <ShopRow shop={item} />}
+/>
+```
+
+Props are the same as `DateGroupedList`, with `getNameKey: (item: T) => string | null | undefined` instead of `getDateKey` and no `dateFormat`.
 
 ---
 
@@ -1277,6 +1384,100 @@ function Balance() {
 | `fontStyles`, `FONT_FAMILIES` | Typography styles used by `StyledText` |
 | `CONTAINER_PADDING`, `RADIUS` | Layout constants used by the components |
 
+### Translations
+
+Components render a few words of their own: the dropdown's "Cancel" and "Select…", "OR", "No record found", the `StatusCard` titles and hint, and the share sheet title. They're English by default. Translate them once through `ThemeProvider`:
+
+```tsx
+import { ThemeProvider } from '@crownone/ui';
+import { useTranslation } from 'react-i18next';
+
+const { t } = useTranslation();
+
+<ThemeProvider
+  dark={isDark}
+  strings={{
+    cancel: t('CANCEL'),
+    or: t('OR'),
+    noRecordFound: t('NO_RECORD_FOUND'),
+    warningTitle: t('WARNING'),
+    successTitle: t('SUCCESS'),
+  }}
+>
+  <App />
+</ThemeProvider>
+```
+
+Missing keys fall back to English. `defaultStrings` holds the defaults, `UIStrings` is the type, and `useStrings()` reads the active strings.
+
+---
+
+## Utilities
+
+| Export | Description |
+|---|---|
+| `formatCashWallet(value)` | `"PKR 12,500"`. Never concatenate `PKR` by hand |
+| `formatPointsWallet(value)` | `"12,500 PTS"` |
+| `useSinglePress(handler, delay = 500)` | Stable press handler that ignores repeat presses within `delay` ms, for your own `Pressable`s |
+| `getFieldErrorMessage(errors, key)` | Reads a field's message from `react-hook-form` errors or a `{ key: message }` map |
+
+---
+
+## Optional Entry Points
+
+Some components need native modules that not every app uses. They live in separate entry points, so apps that don't import them don't need those modules.
+
+### `@crownone/ui/receipt`
+
+`ShareableReceipt` renders a fixed-color receipt that can be captured as a PNG, and `useShareReceipt` captures it and opens the share sheet.
+
+```bash
+npx expo install react-native-view-shot expo-sharing
+```
+
+```tsx
+import { ShareableReceipt, useShareReceipt } from '@crownone/ui/receipt';
+
+const { receiptRef, shareReceipt, isSharing } = useShareReceipt();
+
+// Render off-screen; only the captured image is shown to the user.
+<View style={{ position: 'absolute', top: 0, left: -2000 }} pointerEvents="none">
+  <ShareableReceipt
+    ref={receiptRef}
+    logo={require('./assets/logo.png')}
+    data={{
+      title: 'Cash Approval Receipt',
+      dateText: '01:45 PM • 13 Jul, 2026',
+      idLabel: 'Transaction ID',
+      idValue: 'TX-10421',
+      fromLabel: 'Approved By',
+      from: { name: 'Crown Traders', mobile: '0300 1234567' },
+      toLabel: 'Requested By',
+      to: { name: 'Ali Motors', mobile: '0321 7654321' },
+      amountLabel: 'Amount',
+      amountText: formatCashWallet(12500),
+      disclaimer: 'This is a system-generated receipt.',
+    }}
+  />
+</View>
+
+<StyledButton title="Share receipt" variant="outline" onPress={shareReceipt} loading={isSharing} />
+```
+
+### `@crownone/ui/otp`
+
+`OtpBoxInput`: one box per digit.
+
+```bash
+npm install input-otp-native
+```
+
+```tsx
+import { OtpBoxInput } from '@crownone/ui/otp';
+
+<OtpBoxInput value={otp} onChange={setOtp} /> // maxLength defaults to 6
+```
+
 ---
 
 ## TypeScript
@@ -1287,6 +1488,10 @@ The package ships type definitions. These types are exported for use in your own
 import type {
   AppTheme,
   AppColors,
+  UIStrings,
+  FormErrors,
+  DateSection,
+  AlphabetSection,
   StyledButtonProps,
   StyledButtonVariant,
   StyledChipVariant,
@@ -1312,6 +1517,35 @@ import type {
 | `react-native-reanimated` | `>= 3` | `Skeleton` |
 | `react-native-safe-area-context` | `>= 4` | `BottomActionsBar` |
 | `react-native-size-matters` | `>= 0.4` | `AlphabetAvatar` |
+| `react-native-view-shot` | `>= 4` | `@crownone/ui/receipt` only (optional) |
+| `expo-sharing` | `>= 13` | `@crownone/ui/receipt` only (optional) |
+| `input-otp-native` | `>= 0.6` | `@crownone/ui/otp` only (optional) |
+
+`dayjs` (used by `DateGroupedList`) is installed automatically as a regular dependency.
+
+---
+
+## Using with AI Assistants
+
+The package ships docs written for AI coding assistants, matched to the installed version:
+
+| File | What it's for |
+|---|---|
+| `node_modules/@crownone/ui/llms-full.txt` | Complete usage reference: rules, setup, theme tokens, every component's props and examples |
+| `node_modules/@crownone/ui/llms.txt` | Short index in the [llms.txt](https://llmstxt.org) format |
+| `node_modules/@crownone/ui/skills/crownone-ui/SKILL.md` | A Claude Code skill for building screens with this library |
+
+**Claude Code:** copy the skill into your app once. It reads `llms-full.txt` from `node_modules`, so it stays current when you upgrade the package.
+
+```bash
+mkdir -p .claude/skills && cp -r node_modules/@crownone/ui/skills/crownone-ui .claude/skills/
+```
+
+**Cursor, Copilot, Codex and others:** add this line to your app's `AGENTS.md` (or the tool's rules file):
+
+```md
+UI uses @crownone/ui. Before writing UI code, read node_modules/@crownone/ui/llms-full.txt and follow its rules.
+```
 
 ---
 
@@ -1383,7 +1617,7 @@ The workflow then publishes to npm. Follow it in the **Actions** tab.
 
 > The workflow fails if the release tag doesn't match the `version` in `package.json`. Always create releases from tags made by `npm version`.
 
-Only `lib/`, `src/` and this README are published. The `docs/` and `examples/` folders are not.
+Only `lib/`, `src/`, this README and the AI docs (`llms.txt`, `llms-full.txt`, `skills/`) are published. The `docs/` and `examples/` folders are not. The workflow also runs `npm run check:ai-docs`, which fails if a public export is missing from `llms-full.txt`.
 
 ---
 

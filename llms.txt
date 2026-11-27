@@ -1,0 +1,29 @@
+# @crownone/ui
+
+> Shared React Native / Expo component library for Crown One apps: themed components with light and dark mode, grouped lists, wallet formatters, a theme system (`ThemeProvider`, `useTheme`) with translatable built-in text, and Inter typography. iOS, Android and Web.
+
+Import everything from the package root (`import { StyledButton, useTheme } from "@crownone/ui"`). The app must be wrapped in `ThemeProvider` and load the Inter fonts under the names `inter_light`, `inter_regular`, `inter_medium`, `inter_semiBold` and `inter_bold`. Read colors from `useTheme().colors`; never hardcode them. Icons are MaterialCommunityIcons names.
+
+In an installed project, read `node_modules/@crownone/ui/llms-full.txt` instead of the links below: it matches the installed version.
+
+## Docs
+
+- [Full usage reference](https://raw.githubusercontent.com/hammadev/crownone-ui/main/llms-full.txt): rules, setup, theme tokens, and every component's props with examples
+- [README](https://github.com/hammadev/crownone-ui#readme): human docs with rendered light and dark previews of every component
+- [Claude Code skill](https://raw.githubusercontent.com/hammadev/crownone-ui/main/skills/crownone-ui/SKILL.md): drop-in skill for apps that use the library
+
+## Components
+
+- Typography and media: StyledText, StyledImage, StyledIcon, AlphabetAvatar
+- Actions: StyledButton, StyledChip, StyledTabs
+- Inputs: StyledTextField, SearchBar, StyledDropdown, StyledCheckbox, StyledRadioButton
+- Feedback: StatusCard, EmptyListComponent, LoadingComponent, Skeleton, FieldError
+- Layout: StyledCard, SummaryValueCard, OrDivider, BottomActionsBar, BlurModalBackdrop
+- Lists: DateGroupedList, AlphabetGroupedList
+- Utilities: formatCashWallet, formatPointsWallet, useSinglePress, getFieldErrorMessage
+- Optional entry points: `@crownone/ui/receipt` (ShareableReceipt, useShareReceipt), `@crownone/ui/otp` (OtpBoxInput)
+
+## Optional
+
+- [Interactive playground (Expo Snack)](https://github.com/hammadev/crownone-ui#live-playground)
+- [npm package](https://www.npmjs.com/package/@crownone/ui)

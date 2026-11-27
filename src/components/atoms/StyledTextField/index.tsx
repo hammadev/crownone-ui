@@ -1,15 +1,26 @@
+import { useTheme } from "../../../theme/ThemeContext";
+import { FONT_FAMILIES } from "../../../theme";
 import { Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
-import { Platform, Pressable, StyleSheet, TextInput, TextInputProps, TextStyle, View, ViewStyle } from "react-native";
-import { FONT_FAMILIES } from "../../../theme/fonts";
-import { useTheme } from "../../../theme/ThemeContext";
+import {
+  Platform,
+  Pressable,
+  StyleProp,
+  StyleSheet,
+  TextInput,
+  TextInputProps,
+  TextStyle,
+  View,
+  ViewStyle,
+} from "react-native";
 import StyledText from "../StyledText";
+import { FormErrors, getFieldErrorMessage } from "../../../utils/formErrors";
 
-type FieldErrorValue = string | { message?: string };
 
 interface TextFieldProps extends TextInputProps {
   text?: string;
-  setText: React.Dispatch<React.SetStateAction<string>>;
+  setText?: React.Dispatch<React.SetStateAction<string>> | ((value: string) => void);
+  /** Key of this field in `errors`. */
   formKey?: string;
   icon?: React.JSX.Element;
   disabled?: boolean;
@@ -18,10 +29,12 @@ interface TextFieldProps extends TextInputProps {
   label?: string;
   marginVertical?: number;
   value?: string;
-  containerStyle?: ViewStyle;
-  inputStyle?: TextStyle;
+  isEdit?: boolean;
+  containerStyle?: StyleProp<ViewStyle>;
+  inputStyle?: StyleProp<TextStyle>;
   searchFunc?: (() => void) | null;
-  errors?: Record<string, FieldErrorValue>;
+  /** react-hook-form `formState.errors`, or `{ [formKey]: message }`. */
+  errors?: FormErrors;
   withPasswordToggle?: boolean;
 }
 
@@ -46,27 +59,44 @@ function StyledTextField({
 }: TextFieldProps) {
   const theme = useTheme();
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const shouldShowPasswordToggle = withPasswordToggle && restProps.secureTextEntry;
-  const fieldError = errors?.[formKey];
-  const fieldErrorMessage = typeof fieldError === "string" ? fieldError : fieldError?.message || "";
+  const shouldShowPasswordToggle =
+    withPasswordToggle && restProps.secureTextEntry;
+
+  const { testID: explicitTestID, ...inputProps } = restProps;
+  const idSource = label || placeholder || formKey;
+  const computedTestID =
+    explicitTestID ??
+    (idSource
+      ? `input_${idSource.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/, "")}`
+      : undefined);
+  const fieldErrorMessage = getFieldErrorMessage(errors, formKey);
 
   const handleChangeText = (inputValue: string) => {
-    setText(inputValue);
+    setText?.(inputValue);
     restProps.onChangeText?.(inputValue);
   };
 
   return (
     <View style={[containerStyle, { marginVertical }, styles.container]}>
-      {Boolean(label) && <StyledText p>{label}</StyledText>}
+      {Boolean(label) && (
+        <StyledText variant="bodyXSmallBold">{label}</StyledText>
+      )}
       <View
         style={[
           styles.inputWrapper,
-          { borderColor: theme.colors.border, backgroundColor: theme.colors.surface },
-          disabled && [styles.disabledInput, { backgroundColor: theme.colors.surfaceSecondary }],
+          {
+            borderColor: theme.colors.border,
+            backgroundColor: theme.colors.surface,
+          },
+          disabled && [
+            styles.disabledInput,
+            { backgroundColor: theme.colors.surfaceSecondary },
+          ],
         ]}
       >
         {icon && <View style={styles.icon}>{icon}</View>}
         <TextInput
+          testID={computedTestID}
           value={value || text}
           onChangeText={handleChangeText}
           placeholder={placeholder}
@@ -81,17 +111,33 @@ function StyledTextField({
             style,
             inputStyle,
           ]}
-          {...restProps}
-          secureTextEntry={shouldShowPasswordToggle ? !isPasswordVisible : restProps.secureTextEntry}
+          {...inputProps}
+          secureTextEntry={
+            shouldShowPasswordToggle
+              ? !isPasswordVisible
+              : inputProps.secureTextEntry
+          }
         />
         {shouldShowPasswordToggle ? (
-          <Pressable onPress={() => setIsPasswordVisible((prev) => !prev)} hitSlop={10} style={styles.visibilityToggle}>
-            <Ionicons name={isPasswordVisible ? "eye-off-outline" : "eye-outline"} size={20} color={theme.colors.textMuted} />
+          <Pressable
+            onPress={() => setIsPasswordVisible((prev) => !prev)}
+            hitSlop={10}
+            style={styles.visibilityToggle}
+          >
+            <Ionicons
+              name={isPasswordVisible ? "eye-off-outline" : "eye-outline"}
+              size={20}
+              color={theme.colors.textMuted}
+            />
           </Pressable>
         ) : null}
       </View>
+
       {Boolean(fieldErrorMessage) ? (
-        <StyledText variant="bodyMediumRegular" style={{ color: theme.colors.danger }}>
+        <StyledText
+          variant="bodyMediumRegular"
+          style={{ color: theme.colors.danger }}
+        >
           {fieldErrorMessage}
         </StyledText>
       ) : null}
@@ -102,7 +148,9 @@ function StyledTextField({
 export default StyledTextField;
 
 const styles = StyleSheet.create({
-  container: { width: "100%" },
+  container: {
+    width: "100%",
+  },
   inputWrapper: {
     flexDirection: "row",
     alignItems: "center",
@@ -111,8 +159,20 @@ const styles = StyleSheet.create({
     marginTop: 5,
     paddingHorizontal: 12,
   },
-  input: { flex: 1, fontSize: 14, paddingVertical: 16 },
-  icon: { marginRight: 8 },
-  visibilityToggle: { marginLeft: 8 },
+  input: {
+    flex: 1,
+    fontSize: 14,
+    // fixed line box: Android's Urdu fallback font otherwise inflates the field height
+    lineHeight: 20,
+    includeFontPadding: false,
+    paddingVertical: 16,
+    // minHeight: 50,
+  },
+  icon: {
+    marginRight: 8,
+  },
+  visibilityToggle: {
+    marginLeft: 8,
+  },
   disabledInput: {},
 });

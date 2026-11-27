@@ -1,8 +1,18 @@
-import { Image, type ImageProps, type ImageSource, type ImageStyle } from "expo-image";
-import React, { useState } from "react";
-import { ActivityIndicator, StyleProp, StyleSheet, View } from "react-native";
 import { ABSOLUTE_FILL } from "../../../theme";
 import { useTheme } from "../../../theme/ThemeContext";
+import {
+  Image,
+  type ImageProps,
+  type ImageSource,
+  type ImageStyle,
+} from "expo-image";
+import React, { useState } from "react";
+import {
+  ActivityIndicator,
+  StyleProp,
+  StyleSheet,
+  View,
+} from "react-native";
 
 type StyledImageProps = ImageProps & {
   style?: StyleProp<ImageStyle>;
@@ -11,15 +21,40 @@ type StyledImageProps = ImageProps & {
   loaderColor?: string;
 };
 
-const StyledImage = ({ style, source, placeholderSource, loaderColor, ...props }: StyledImageProps) => {
+const StyledImage = ({
+  style,
+  source,
+  placeholderSource,
+  loaderColor,
+  ...props
+}: StyledImageProps) => {
   const theme = useTheme();
   const [imageError, setImageError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  const defaultPlaceholder = { uri: "" };
+  // Using an empty image from Unsplash as the default placeholder
+  const defaultPlaceholder = {
+    // uri: EMPTY_IMAGE_URI,
+    uri: "",
+  };
+
+  function onLoadStart() {
+    setIsLoading(true);
+  }
+
+  function onLoadEnd() {
+    setIsLoading(false);
+  }
+
+  function onError() {
+    setImageError(true);
+    setIsLoading(false);
+  }
 
   const customizedLoaderColor = loaderColor || theme.colors.primary;
-  const imageSource = imageError ? placeholderSource || defaultPlaceholder : source;
+  const imageSource = imageError
+    ? placeholderSource || defaultPlaceholder
+    : source;
 
   return (
     <View style={[styles.container, style]}>
@@ -27,13 +62,18 @@ const StyledImage = ({ style, source, placeholderSource, loaderColor, ...props }
         style={StyleSheet.absoluteFill}
         source={imageSource}
         // @ts-ignore
-        onError={() => { setImageError(true); setIsLoading(false); }}
-        onLoadStart={() => setIsLoading(true)}
-        onLoadEnd={() => setIsLoading(false)}
+        onError={onError}
+        onLoadStart={onLoadStart}
+        onLoadEnd={onLoadEnd}
         {...props}
       />
       {isLoading && (
-        <View style={[styles.loaderContainer, { backgroundColor: theme.colors.background }]}>
+        <View
+          style={[
+            styles.loaderContainer,
+            { backgroundColor: theme.colors.background },
+          ]}
+        >
           <ActivityIndicator size="small" color={customizedLoaderColor} />
         </View>
       )}
@@ -42,7 +82,9 @@ const StyledImage = ({ style, source, placeholderSource, loaderColor, ...props }
 };
 
 const styles = StyleSheet.create({
-  container: { overflow: "hidden" },
+  container: {
+    overflow: "hidden",
+  },
   loaderContainer: {
     ...ABSOLUTE_FILL,
     justifyContent: "center",

@@ -1,9 +1,7 @@
+import { useTheme } from "../../../theme/ThemeContext";
+import { colors as designColors, fontStyles } from "../../../theme";
 import React from "react";
 import { I18nManager, Text, type ColorValue, type StyleProp, type TextProps, type TextStyle } from "react-native";
-import { fontStyles } from "../../../theme/fonts";
-import { colors, colors as designColors } from "../../../theme/colors";
-import { useTheme } from "../../../theme/ThemeContext";
-import type { AppTheme } from "../../../theme/defaultTheme";
 
 type TextVariant =
   | "heading1Bold" | "heading1Regular"
@@ -34,13 +32,18 @@ interface StyledTextProps extends TextProps {
   primary?: boolean;
   titleMedium?: boolean;
   title?: string;
-  textColor?: ColorValue | keyof typeof colors | keyof AppTheme["colors"];
+  textColor?: ColorValue | keyof typeof designColors | keyof ReturnType<typeof useTheme>["colors"];
   style?: StyleProp<TextStyle>;
   children?: React.ReactNode;
 }
 
 const resolveVariantStyle = (props: StyledTextProps): TextStyle => {
-  const { variant, h1, h2, h3, h4, h5, h6, p, small, mini, buttonLabel, titleMedium, bold } = props;
+  const {
+    variant,
+    h1, h2, h3, h4, h5, h6,
+    p, small, mini, buttonLabel, titleMedium,
+    bold,
+  } = props;
 
   let base: TextStyle = fontStyles.bodyMediumRegular;
 
@@ -68,7 +71,9 @@ const resolveVariantStyle = (props: StyledTextProps): TextStyle => {
     base = fontStyles.bodyMediumRegular;
   }
 
-  if (!bold) return base;
+  if (!bold) {
+    return base;
+  }
 
   if (base === fontStyles.heading1Regular) return fontStyles.heading1Bold;
   if (base === fontStyles.heading2Regular) return fontStyles.heading2Bold;
@@ -82,33 +87,41 @@ const resolveVariantStyle = (props: StyledTextProps): TextStyle => {
   if (base === fontStyles.bodyXSmallRegular) return fontStyles.bodyXSmallBold;
   if (base === fontStyles.bodyXXSmallRegular) return fontStyles.bodyXXSmallBold;
 
-  return { ...base, fontFamily: fontStyles.bodyMediumBold.fontFamily, textAlign: I18nManager.isRTL ? "right" : "left" };
+  return {
+    ...base, fontFamily: fontStyles.bodyMediumBold.fontFamily, textAlign: I18nManager.isRTL ? 'right' : 'left',
+  };
 };
 
 const resolveColor = (
   textColor: StyledTextProps["textColor"],
   primary: boolean | undefined,
-  theme: AppTheme,
-): ColorValue => {
+  theme: ReturnType<typeof useTheme>,
+) => {
   if (primary) return theme.colors.primary;
   if (!textColor) return theme.colors.text;
   if (typeof textColor === "string") {
-    if ((theme.colors as Record<string, string>)[textColor]) return (theme.colors as Record<string, string>)[textColor];
-    if ((colors as Record<string, string>)[textColor]) return (colors as Record<string, string>)[textColor];
-    if ((designColors as Record<string, string>)[textColor]) return (designColors as Record<string, string>)[textColor];
+    if ((theme.colors as any)[textColor]) return (theme.colors as any)[textColor];
+    if ((designColors as any)[textColor]) return (designColors as any)[textColor];
   }
   return textColor as ColorValue;
 };
 
-const StyledText: React.FC<StyledTextProps> = ({ style, textColor, primary, children, ...props }) => {
+const StyledText: React.FC<StyledTextProps> = ({
+  style,
+  textColor,
+  primary,
+  children,
+  ...props
+}) => {
   const theme = useTheme();
   const variantStyle = resolveVariantStyle(props);
   const color = resolveColor(textColor, primary, theme);
   return (
-    <Text style={[variantStyle, { color, textAlign: "auto" }, style]} {...props}>
+    <Text style={[variantStyle, { color, textAlign: "auto"}, style]} {...props}>
       {children}
     </Text>
   );
 };
 
 export default StyledText;
+

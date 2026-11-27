@@ -10,12 +10,26 @@
       "import": "./lib/module/index.js",
       "require": "./lib/commonjs/index.js",
       "types": "./lib/typescript/index.d.ts"
-    }
+    },
+    "./receipt": {
+      "import": "./lib/module/receipt.js",
+      "require": "./lib/commonjs/receipt.js",
+      "types": "./lib/typescript/receipt.d.ts"
+    },
+    "./otp": {
+      "import": "./lib/module/otp.js",
+      "require": "./lib/commonjs/otp.js",
+      "types": "./lib/typescript/otp.d.ts"
+    },
+    "./package.json": "./package.json"
   },
   "source": "src/index.ts",
   "files": [
     "lib",
     "src",
+    "llms.txt",
+    "llms-full.txt",
+    "skills",
     "!**/__tests__",
     "!**/*.spec.*",
     "!**/*.test.*"
@@ -23,7 +37,8 @@
   "scripts": {
     "build": "bob build",
     "prepare": "bob build",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "check:ai-docs": "node scripts/check-ai-docs.js"
   },
   "keywords": [
     "react-native",
@@ -40,20 +55,40 @@
   "bugs": {
     "url": "https://github.com/hammadev/crownone-ui/issues"
   },
+  "dependencies": {
+    "dayjs": "^1.11.19"
+  },
   "peerDependencies": {
     "@expo/vector-icons": ">=13",
     "expo-blur": ">=13",
     "expo-image": ">=1",
     "expo-linear-gradient": ">=13",
+    "expo-sharing": ">=13",
+    "input-otp-native": ">=0.6",
     "react": ">=18",
     "react-native": ">=0.73",
     "react-native-reanimated": ">=3",
     "react-native-safe-area-context": ">=4",
-    "react-native-size-matters": ">=0.4"
+    "react-native-size-matters": ">=0.4",
+    "react-native-view-shot": ">=4"
+  },
+  "peerDependenciesMeta": {
+    "expo-sharing": {
+      "optional": true
+    },
+    "input-otp-native": {
+      "optional": true
+    },
+    "react-native-view-shot": {
+      "optional": true
+    }
   },
   "devDependencies": {
-    "react-native-builder-bob": "^0.37.0",
     "@types/react": "^19.0.0",
+    "expo-sharing": "~14.0.8",
+    "input-otp-native": "^0.6.0",
+    "react-native-builder-bob": "^0.37.0",
+    "react-native-view-shot": "4.0.3",
     "typescript": "^5.3.0"
   },
   "react-native-builder-bob": {

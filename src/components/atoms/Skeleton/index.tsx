@@ -1,27 +1,43 @@
-import React, { PropsWithChildren, useEffect } from "react";
-import { StyleProp, ViewStyle } from "react-native";
-import Animated, { Easing, useAnimatedStyle, useSharedValue, withRepeat, withTiming } from "react-native-reanimated";
+import React, { useEffect, PropsWithChildren } from 'react';
+import Animated, {
+  useSharedValue,
+  withTiming,
+  withRepeat,
+  useAnimatedStyle,
+  Easing,
+} from 'react-native-reanimated';
+import { ViewStyle, StyleProp } from 'react-native';
 
 export interface SkeletonProps {
   style?: StyleProp<ViewStyle>;
-  duration?: number;
+  duration?: number; // ms
 }
 
-export function Skeleton({ children, style, duration = 1000 }: PropsWithChildren<SkeletonProps>) {
+export function Skeleton({
+  children,
+  style,
+  duration = 1000,
+}: PropsWithChildren<SkeletonProps>) {
   const opacity = useSharedValue(0.4);
 
   useEffect(() => {
     opacity.value = withRepeat(
       withTiming(1, { duration, easing: Easing.inOut(Easing.ease) }),
       -1,
-      true,
+      true // reverse
     );
   }, [duration]);
 
-  const animatedStyle = useAnimatedStyle(() => ({ opacity: opacity.value }));
+  const animatedStyle = useAnimatedStyle(() => ({
+    opacity: opacity.value,
+  }));
 
   return (
-    <Animated.View pointerEvents="none" style={[style, animatedStyle]}>
+    <Animated.View
+      // don’t let touches hit skeletons
+      pointerEvents="none"
+      style={[style, animatedStyle]}
+    >
       {children}
     </Animated.View>
   );

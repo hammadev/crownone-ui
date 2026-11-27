@@ -1,7 +1,15 @@
+import { useTheme } from "../../../theme/ThemeContext";
+import { useSinglePress } from "../../../hooks/useSinglePress";
 import { BlurView } from "expo-blur";
 import React from "react";
-import { Platform, Pressable, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
-import { useTheme } from "../../../theme/ThemeContext";
+import {
+  Platform,
+  Pressable,
+  StyleProp,
+  StyleSheet,
+  View,
+  ViewStyle,
+} from "react-native";
 
 type BlurModalBackdropProps = {
   children: React.ReactNode;
@@ -9,10 +17,16 @@ type BlurModalBackdropProps = {
   contentStyle?: StyleProp<ViewStyle>;
 };
 
-export default function BlurModalBackdrop({ children, onPress, contentStyle }: BlurModalBackdropProps) {
+export default function BlurModalBackdrop({
+  children,
+  onPress,
+  contentStyle,
+}: BlurModalBackdropProps) {
   const theme = useTheme();
+  const guardedPress = useSinglePress(onPress);
+
   return (
-    <Pressable style={styles.overlay} onPress={onPress}>
+    <Pressable style={styles.overlay} onPress={guardedPress}>
       {Platform.OS === "android" ? (
         <BlurView
           intensity={60}
@@ -21,17 +35,28 @@ export default function BlurModalBackdrop({ children, onPress, contentStyle }: B
           style={StyleSheet.absoluteFill}
         />
       ) : (
-        <BlurView intensity={28} tint={theme.dark ? "dark" : "light"} style={StyleSheet.absoluteFill} />
+        <BlurView
+          intensity={28}
+          tint={theme.dark ? "dark" : "light"}
+          style={StyleSheet.absoluteFill}
+        />
       )}
       <View
         pointerEvents="none"
         style={[
           StyleSheet.absoluteFill,
           styles.overlayTint,
-          { backgroundColor: theme.dark ? "rgba(0,0,0,0.22)" : "rgba(255,255,255,0.14)" },
+          {
+            backgroundColor: theme.dark
+              ? "rgba(0,0,0,0.22)"
+              : "rgba(255,255,255,0.14)",
+          },
         ]}
       />
-      <Pressable onPress={(e) => e.stopPropagation()} style={[styles.content, contentStyle]}>
+      <Pressable
+        onPress={(e) => e.stopPropagation()}
+        style={[styles.content, contentStyle]}
+      >
         {children}
       </Pressable>
     </Pressable>
@@ -39,7 +64,13 @@ export default function BlurModalBackdrop({ children, onPress, contentStyle }: B
 }
 
 const styles = StyleSheet.create({
-  overlay: { flex: 1 },
-  overlayTint: { opacity: 1 },
-  content: { flex: 1 },
+  overlay: {
+    flex: 1,
+  },
+  overlayTint: {
+    opacity: 1,
+  },
+  content: {
+    flex: 1,
+  },
 });

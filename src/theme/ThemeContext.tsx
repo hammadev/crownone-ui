@@ -1,5 +1,6 @@
-import React, { createContext, useContext } from "react";
+import React, { createContext, useContext, useMemo } from "react";
 import { AppTheme, darkTheme, lightTheme } from "./defaultTheme";
+import { defaultStrings, StringsContext, UIStrings } from "./strings";
 
 const ThemeContext = createContext<AppTheme>(lightTheme);
 
@@ -9,13 +10,16 @@ type ThemeProviderProps = {
   theme?: AppTheme;
   /** Shortcut to switch to the built-in dark theme (ignored when `theme` is provided). */
   dark?: boolean;
+  /** Translations for the text components render by default (e.g. "Cancel", "OR"). Missing keys fall back to English. */
+  strings?: Partial<UIStrings>;
 };
 
-export function ThemeProvider({ children, theme, dark }: ThemeProviderProps) {
+export function ThemeProvider({ children, theme, dark, strings }: ThemeProviderProps) {
   const resolved = theme ?? (dark ? darkTheme : lightTheme);
+  const resolvedStrings = useMemo(() => ({ ...defaultStrings, ...strings }), [strings]);
   return (
     <ThemeContext.Provider value={resolved}>
-      {children}
+      <StringsContext.Provider value={resolvedStrings}>{children}</StringsContext.Provider>
     </ThemeContext.Provider>
   );
 }

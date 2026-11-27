@@ -1,15 +1,15 @@
-import React from "react";
-import { ActivityIndicator, ViewStyle } from "react-native";
+import * as React from 'react';
+import { ActivityIndicator, ViewStyle, StyleProp } from "react-native";
 import { useTheme } from "../../../theme/ThemeContext";
 
-interface LoadingComponentProps {
+interface Props {
   loading?: boolean;
-  style?: ViewStyle;
-  size: "small" | "large";
-  color?: string;
+  style?: StyleProp<ViewStyle>;
+  size:'small' | 'large',
+  color?:string,
 }
 
-export const LoadingComponent: React.FC<LoadingComponentProps> = ({ loading = false, style, size, color }) => {
+export const LoadingComponent: React.FC<Props> = ({loading = false,style,size,color}) => {
   const theme = useTheme();
   if (loading) {
     return <ActivityIndicator size={size} style={style} color={color || theme.colors.textInverse} testID="activity-indicator" />;

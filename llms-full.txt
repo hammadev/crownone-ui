@@ -1,0 +1,519 @@
+# @crownone/ui — full usage reference
+
+> Shared React Native / Expo component library for Crown One apps: themed components (light and dark mode), grouped lists, wallet formatters, a theme system with translatable built-in text, and typography tokens. iOS, Android and Web.
+
+This file is the complete, version-matched reference for writing code that uses `@crownone/ui`. It ships inside the npm package at `node_modules/@crownone/ui/llms-full.txt`, so it always matches the installed version. The TypeScript definitions in `node_modules/@crownone/ui/lib/typescript/` are the final word on prop types.
+
+## Rules
+
+1. Import everything from the package root: `import { StyledButton, useTheme } from "@crownone/ui"`. Never import from `@crownone/ui/lib/...` or `@crownone/ui/src/...`.
+2. The app must be wrapped in `ThemeProvider`, and the Inter fonts must be loaded under the exact names below. Components read colors from the theme and render with the wrong colors or fonts otherwise.
+3. Never hardcode colors. Read them from `useTheme().colors`. Use `theme.spacing`, `theme.radius` and `CONTAINER_PADDING` for spacing.
+4. Use the library's primitives instead of React Native's: `StyledText` instead of `Text`, `StyledImage` instead of `Image`, `StyledButton` instead of `TouchableOpacity` buttons, `StyledIcon` for icons.
+5. `StyledIcon` and `StatusCard.iconName` use **MaterialCommunityIcons** names (`"check-circle"`, `"alert-outline"`, `"chevron-right"`). Ionicons names such as `"checkmark-circle"` will not render.
+6. To size a `StyledButton` in a layout (for example `flex: 1` in a row), use `containerStyle`, not `style`.
+7. Reject/Approve pairs: Reject is `variant="danger"` on the left, Approve/Confirm is `variant="success"` on the right, inside `<BottomActionsBar layout="row" gap={12}>` with `containerStyle={{ flex: 1 }}` on each button.
+8. `BottomActionsBar` is `position: absolute` at the bottom by default (`sticky`). Pad the scroll content behind it, for example with `onHeight`. With `layout="column"`, pass `align="stretch"` or the children shrink to their content width.
+9. Always pass `variant` to `StatusCard`. Its default is `"error"`.
+10. Form fields: pass react-hook-form's `formState.errors` straight to `errors` with the field's `formKey`, and the message shows under the field. Both are optional.
+11. Empty lists: use `EmptyListComponent`, never a hand-built `StatusCard variant="info"` with a "no record" message.
+12. Money: use `formatCashWallet(value)` ("PKR 12,500") and `formatPointsWallet(value)` ("12,500 PTS"). Never concatenate "PKR" or "PTS" by hand.
+13. Apps in other languages pass translations once through `ThemeProvider`'s `strings` prop (see Translations). Don't hardcode English inside shared components.
+
+## Installation
+
+```bash
+npm install @crownone/ui
+npx expo install @expo/vector-icons expo-blur expo-image expo-linear-gradient react-native-reanimated react-native-safe-area-context react-native-size-matters
+```
+
+Requirements: React >= 18, React Native >= 0.73, Expo SDK >= 50.
+
+## Setup
+
+### Fonts (iOS and Android)
+
+Load Inter under these exact family names before rendering any component. On web the family is `"Inter"`; load it with a web font.
+
+```tsx
+import { useFonts } from "expo-font";
+
+const [loaded] = useFonts({
+  inter_light: require("./assets/fonts/Inter-Light.ttf"),
+  inter_regular: require("./assets/fonts/Inter-Regular.ttf"),
+  inter_medium: require("./assets/fonts/Inter-Medium.ttf"),
+  inter_semiBold: require("./assets/fonts/Inter-SemiBold.ttf"),
+  inter_bold: require("./assets/fonts/Inter-Bold.ttf"),
+});
+if (!loaded) return null;
+```
+
+### ThemeProvider
+
+```tsx
+import { ThemeProvider } from "@crownone/ui";
+import { useColorScheme } from "react-native";
+
+export default function App() {
+  const scheme = useColorScheme();
+  return <ThemeProvider dark={scheme === "dark"}>{/* app */}</ThemeProvider>;
+}
+```
+
+`ThemeProvider` props: `dark?: boolean` (use the built-in dark theme), `theme?: AppTheme` (a custom theme; takes precedence over `dark`), `strings?: Partial<UIStrings>` (translations for built-in text).
+
+### Translations
+
+Components render a few words of their own ("Cancel", "OR", "No record found", status titles…). English is the default. Pass translations once:
+
+```tsx
+import { ThemeProvider } from "@crownone/ui";
+import { useTranslation } from "react-i18next";
+
+const { t } = useTranslation();
+<ThemeProvider
+  dark={isDark}
+  strings={{
+    cancel: t("CANCEL"),
+    selectPlaceholder: t("SELECT"),
+    or: t("OR"),
+    errorTitle: t("ERROR"),
+    warningTitle: t("WARNING"),
+    infoTitle: t("INFO"),
+    successTitle: t("SUCCESS"),
+    tapForDetails: t("TAP_FOR_DETAILS"),
+    noRecordFound: t("NO_RECORD_FOUND"),
+    shareReceipt: t("SHARE_RECEIPT"),
+  }}
+>
+```
+
+`UIStrings` is the type of the full object, `defaultStrings` holds the English defaults, and `useStrings()` reads the active strings inside the provider.
+
+## Theme
+
+```ts
+import { useTheme } from "@crownone/ui";
+const theme = useTheme(); // AppTheme
+```
+
+`AppTheme`:
+
+- `dark: boolean`
+- `colors`: `primary`, `primaryPressed`, `primarySoft`, `secondary`, `background`, `backgroundSecondary`, `backgroundTertiary`, `surface`, `surfaceSecondary`, `card`, `border`, `borderSoft`, `text`, `textSecondary`, `textMuted`, `textInverse`, `icon`, `placeholder`, `success`, `successSoft`, `warning`, `warningSoft`, `danger`, `dangerSoft`, `info`, `infoSoft`, `overlay`, `shadow`, `tabIconDefault`, `tabIconSelected`, `statusBar` (`"dark-content" | "light-content"`)
+- `spacing`: `xs` 4, `sm` 8, `md` 12, `lg` 16, `xl` 24, `xxl` 32
+- `radius`: `xs` 6, `sm` 10, `md` 14, `lg` 18, `xl` 24, `pill` 999
+
+Use the `*Soft` colors for tinted backgrounds and the matching strong color for text, icons and borders on them (for example `successSoft` background with `success` icon).
+
+Custom theme: spread a built-in theme and override only what you need.
+
+```tsx
+import { lightTheme, ThemeProvider } from "@crownone/ui";
+import type { AppTheme } from "@crownone/ui";
+
+const brandTheme: AppTheme = {
+  ...lightTheme,
+  colors: { ...lightTheme.colors, primary: "#6200EE", primaryPressed: "#3700B3", primarySoft: "#EDE7F6" },
+};
+
+<ThemeProvider theme={brandTheme}>{/* app */}</ThemeProvider>;
+```
+
+Other exports:
+
+- `lightTheme`, `darkTheme`: the built-in `AppTheme` objects.
+- `colors`, `palette`: raw color tokens behind the themes. Prefer `useTheme().colors` in components so dark mode works.
+- `fontStyles`: the typography styles behind `StyledText` variants. `FONT_FAMILIES`: `light`, `regular`, `medium`, `semiBold`, `bold`.
+- `CONTAINER_PADDING` (16): standard screen padding. `RADIUS` (8): base radius used by the components.
+
+## Components
+
+### StyledText
+
+Text with the library's typography and theme colors. Accepts all React Native `Text` props.
+
+- `variant`: `heading1Bold` (36) … `heading6Bold` (20), each also `…Regular`; `bodyLargeBold` / `bodyLargeRegular` (18), `bodyMedium…` (16), `bodySmall…` (14), `bodyXSmall…` (13), `bodyXXSmall…` (11).
+- Shortcuts: `h1`–`h6`, `p` (body medium regular), `small` (body small regular), `mini` (body xsmall regular), `bold`, `primary` (primary color).
+- `textColor`: a theme color key (`"textMuted"`, `"success"`), a palette key, or any color value.
+
+```tsx
+<StyledText variant="bodyMediumBold">Order summary</StyledText>
+<StyledText small textColor="textMuted">Order #CR-10421</StyledText>
+<StyledText h4>Welcome</StyledText>
+```
+
+### StyledImage
+
+Image built on `expo-image`, with a loading indicator and a fallback image. Accepts all `expo-image` `ImageProps`.
+
+- `source` (required), `placeholderSource?` (shown on error), `loaderColor?`, `style?`.
+
+```tsx
+<StyledImage
+  source={{ uri: user.avatarUrl }}
+  placeholderSource={require("./assets/default-avatar.png")}
+  contentFit="cover"
+  style={{ width: 80, height: 80, borderRadius: 40 }}
+/>
+```
+
+### StyledButton
+
+Themed button with variants, loading state, a press animation and a built-in double-tap guard (presses within 500 ms of the last one are ignored). It gets an automatic `testID` of `btn_<title>` unless you pass `testID`.
+
+- `title: string` (required), `onPress?`
+- `variant?`: `"primary"` (default) | `"outline"` | `"light"` | `"success"` | `"danger"` | `"info"`
+- `loading?`, `disabled?`, `rounded?` (pill shape), `leftIcon?`, `rightIcon?`
+- `containerStyle?`: layout of the outer wrapper (use this for `flex`, width, margins). `style?`, `textStyle?`, `textColor?`: the button body and label. All style props accept arrays.
+- `testID?`
+
+```tsx
+<StyledButton title="Submit" onPress={submit} loading={isSubmitting} />
+
+<BottomActionsBar layout="row" gap={12}>
+  <StyledButton title="Reject" variant="danger" onPress={reject} containerStyle={{ flex: 1 }} />
+  <StyledButton title="Approve" variant="success" onPress={approve} containerStyle={{ flex: 1 }} />
+</BottomActionsBar>
+```
+
+When a submit handler awaits something before the API call (location, permissions), keep your own `isSubmitting` state set at the top of the handler and pass `loading={isSubmitting || isMutationLoading}`, so the button shows loading from the first tap.
+
+### StyledCard
+
+Themed surface card. It becomes pressable when `onPress` is set.
+
+- `children` (required), `style?`, `onPress?`, `isPressable?` (default `true`; set `false` to keep the card static even with `onPress`).
+
+```tsx
+<StyledCard onPress={() => router.push("/receipt")}>
+  <StyledText variant="bodyMediumBold">Pressable card</StyledText>
+</StyledCard>
+```
+
+### StyledCheckbox
+
+- `value: boolean` (required), `onChange?: (value: boolean) => void`, `disabled?`, `style?`.
+
+```tsx
+<StyledCheckbox value={accepted} onChange={setAccepted} />
+```
+
+### StyledRadioButton
+
+Visual radio indicator only. Wrap it in a `Pressable` to handle presses.
+
+- `isSelected: boolean` (required), `isDisabled?`.
+
+```tsx
+<Pressable onPress={() => setMethod("cash")} style={{ flexDirection: "row", gap: 12 }}>
+  <StyledRadioButton isSelected={method === "cash"} />
+  <StyledText p>Cash wallet</StyledText>
+</Pressable>
+```
+
+### StyledChip
+
+Label chip for statuses and filters.
+
+- `label: string` (required), `variant?`: `"default"` (default) | `"selected"` | `"primary"` | `"outline"` | `"light"` | `"success"` | `"warning"` | `"danger"` | `"info"`
+- `size?`: `"lg"` (default) | `"sm"`, `selected?`, `onPress?`, `chipStyle?`, `textStyle?`.
+
+```tsx
+<StyledChip label="Approved" variant="success" size="sm" />
+<StyledChip label="Active" selected={filter === "active"} onPress={() => setFilter("active")} />
+```
+
+### StyledIcon
+
+MaterialCommunityIcons icon with the theme's icon color by default.
+
+- `name: string | undefined` (required, MaterialCommunityIcons name), `size: number` (required), `color?`, `style?`.
+
+```tsx
+const theme = useTheme();
+<StyledIcon name="check-circle" size={24} color={theme.colors.success} />
+```
+
+### StyledTextField
+
+Text input with label, left icon, password toggle and inline form errors. Accepts all `TextInput` props.
+
+- Value: `text?` or `value?`. Changes: `setText?` (a state setter or `(value: string) => void`) and/or `onChangeText?`
+- `label?`, `placeholder?`, `icon?` (element on the left), `withPasswordToggle?` (with `secureTextEntry`), `disabled?`, `marginVertical?`
+- `formKey?` + `errors?`: shows the message for `formKey` under the field. `errors` is react-hook-form's `formState.errors` or `{ [formKey]: message }`
+- Gets an automatic `testID` of `input_<label or placeholder>` unless you pass `testID`
+- `containerStyle?`, `inputStyle?`, `searchFunc?` (called on submit)
+
+```tsx
+<StyledTextField label="Full name" text={name} setText={setName} />
+
+// react-hook-form
+<Controller
+  control={control}
+  name="email"
+  render={({ field }) => (
+    <StyledTextField
+      label="Email"
+      text={field.value}
+      setText={field.onChange}
+      keyboardType="email-address"
+      formKey="email"
+      errors={errors}
+    />
+  )}
+/>
+```
+
+The input has a fixed `lineHeight` of 20 (so Urdu fallback fonts don't stretch the field). If you enlarge the text through `inputStyle` (`fontSize`), raise `lineHeight` with it, or tall glyphs are clipped.
+
+### StyledDropdown
+
+Cross-platform select: native action sheet on iOS, modal list on Android and Web. Generic over the value type.
+
+- `items: DropdownItem<T>[]` (required; `{ label, value, disabled? }`), `value: T | null | undefined` (required), `onChange: (v: T) => void` (required)
+- `formKey?` + `errors?`: same as `StyledTextField`
+- `label?`, `placeholder?` (default from `strings.selectPlaceholder`), `disabled?`, `errorText?` (forces an error message), `inputStyle?`, `rightAdornment?`
+
+```tsx
+const countries: DropdownItem<string>[] = [
+  { label: "Pakistan", value: "PK" },
+  { label: "United Kingdom", value: "GB" },
+];
+
+<Controller
+  control={control}
+  name="country"
+  render={({ field: { value, onChange } }) => (
+    <StyledDropdown items={countries} value={value} onChange={onChange} placeholder="Select country" formKey="country" errors={errors} />
+  )}
+/>
+```
+
+### StyledTabs
+
+Segmented tabs with optional count badges. Named export (not default). Generic over the tab key.
+
+- `tabs: TabItem<Key>[]` (required; `{ key, label, badge? }`), `activeKey: Key` (required), `onTabChange: (key: Key) => void` (required)
+- `style?`, `tabStyle?`, `textStyle?`, `activeTabStyle?`, `activeTextStyle?`
+
+```tsx
+type TabKey = "received" | "sent";
+const tabs: TabItem<TabKey>[] = [
+  { key: "received", label: "Received", badge: 3 },
+  { key: "sent", label: "Sent" },
+];
+<StyledTabs tabs={tabs} activeKey={tab} onTabChange={setTab} />
+```
+
+### StatusCard
+
+Tinted message card for errors, warnings, info and success. Named export (not default).
+
+- `variant?`: `"error"` (default) | `"warning"` | `"info"` | `"success"`. Always pass it.
+- `message?`, `description?`, `title?` (overrides the default title), `iconName?` (MaterialCommunityIcons)
+- `clickable?` + `onPress?` + `hintText?`, `style?`
+
+```tsx
+<StatusCard variant="warning" message="Low balance" description="Top up to keep redeeming rewards." />
+<StatusCard variant="info" message="Verification pending" clickable hintText="Tap for details" onPress={openKyc} />
+```
+
+### AlphabetAvatar
+
+Circle with the first letter of a name.
+
+- `name: string` (required), `size?`, `style?`.
+
+```tsx
+<AlphabetAvatar name={shop.name} size={46} />
+```
+
+### LoadingComponent
+
+Activity indicator that renders only while `loading` is true.
+
+- `size: "small" | "large"` (required), `loading?`, `color?`, `style?`.
+
+```tsx
+<LoadingComponent loading={isFetching} size="large" color={theme.colors.primary} />
+```
+
+### FieldError
+
+Small danger-colored error line. Renders nothing when `message` is empty.
+
+- `message?: string`.
+
+```tsx
+<FieldError message={errors.mobile?.message} />
+```
+
+### OrDivider
+
+Horizontal divider with a centered label.
+
+- `label?: string` (default from `strings.or`, "OR").
+
+### Skeleton
+
+Pulsing placeholder block. Set its size, radius and `backgroundColor` through `style`.
+
+- `style?`, `duration?` (pulse duration in ms).
+
+```tsx
+const { colors } = useTheme();
+<Skeleton style={{ width: "80%", height: 14, borderRadius: 4, backgroundColor: colors.backgroundTertiary }} />
+```
+
+### BottomActionsBar
+
+Blurred action bar pinned to the bottom of the screen, respecting the safe area.
+
+- `children` (required)
+- `layout?`: `"row"` (default) | `"column"`; `gap?` (10); `align?` (`"center"`); `justify?` (`"center"`)
+- `sticky?` (true: absolutely positioned at the bottom), `respectSafeArea?` (true), `showTopEdge?` (true), `intensity?` (blur, 50)
+- `horizontalPadding?` (16), `verticalPadding?` (8), `style?`, `contentStyle?`, `onHeight?: (h: number) => void`
+
+```tsx
+const [barHeight, setBarHeight] = useState(0);
+
+<ScrollView contentContainerStyle={{ paddingBottom: barHeight }}>{/* content */}</ScrollView>
+<BottomActionsBar onHeight={setBarHeight} layout="column" align="stretch" gap={12}>
+  <StyledButton title="Share receipt" variant="outline" onPress={share} />
+  <StyledButton title="Done" onPress={done} />
+</BottomActionsBar>
+```
+
+### BlurModalBackdrop
+
+Blurred, tappable backdrop for modals. Use it inside a transparent `Modal`.
+
+- `children` (required), `onPress?` (backdrop tap, usually close), `contentStyle?`.
+
+```tsx
+<Modal visible={visible} transparent animationType="fade" onRequestClose={close}>
+  <BlurModalBackdrop onPress={close} contentStyle={{ justifyContent: "center", padding: 24 }}>
+    <View style={{ backgroundColor: theme.colors.surface, borderRadius: theme.radius.lg, padding: 18 }}>
+      {/* modal content */}
+    </View>
+  </BlurModalBackdrop>
+</Modal>
+```
+
+### SearchBar
+
+Search input with an icon. Accepts `TextInput` props except `value` / `onChangeText`, which are replaced.
+
+- `value: string` (required), `setValue: Dispatch<SetStateAction<string>>` (required), `onChangeText?`, `placeholder?`, `containerStyle?`, `inputStyle?`.
+
+```tsx
+const [search, setSearch] = useState("");
+<SearchBar value={search} setValue={setSearch} placeholder="Search shops" />
+```
+
+### EmptyListComponent
+
+The standard "No record found" message for empty lists (an info `StatusCard`).
+
+- `message?` (default from `strings.noRecordFound`), `isLoading?` (renders nothing while true), `style?`.
+- It has no built-in margin. If the parent has no horizontal padding, pass `style={{ marginHorizontal: CONTAINER_PADDING }}`.
+
+```tsx
+<FlatList data={items} renderItem={renderItem} ListEmptyComponent={<EmptyListComponent isLoading={isLoading} />} />
+```
+
+### SummaryValueCard
+
+Small tinted card with a title and a value, for totals and balances.
+
+- `title: string` (required), `value: string` (required), `variant` (required): `"sent"` | `"received"` | `"success"` | `"warning"` | `"danger"` | `"info"`, `style?`.
+
+```tsx
+<View style={{ flexDirection: "row", gap: 10 }}>
+  <SummaryValueCard title="Old cash wallet" value={formatCashWallet(oldBalance)} variant="info" />
+  <SummaryValueCard title="New cash wallet" value={formatCashWallet(newBalance)} variant="success" />
+</View>
+```
+
+### DateGroupedList
+
+`SectionList` that groups items by date, with sticky headers showing the date and an item count.
+
+- `items: T[]`, `getDateKey: (item) => string | number | null | undefined` (any date-parseable value), `keyExtractor`, `renderItem` (all required)
+- `dateFormat?` (dayjs format, default `"dddd, DD-MMM-YYYY"`), `loading?`, `refreshing?`, `onRefresh?`, `emptyText?`, `ListHeaderComponent?`, `ListFooterComponent?`, `contentContainerStyle?`
+
+```tsx
+<DateGroupedList
+  items={transactions}
+  getDateKey={(tx) => tx.createdAt}
+  keyExtractor={(tx) => String(tx.id)}
+  renderItem={({ item }) => <TransactionRow item={item} />}
+  refreshing={isFetching}
+  onRefresh={refetch}
+/>
+```
+
+### AlphabetGroupedList
+
+`SectionList` that groups items A–Z by the first letter of a name, with sticky letter headers and counts.
+
+- `items: T[]`, `getNameKey: (item) => string | null | undefined`, `keyExtractor`, `renderItem` (all required)
+- `loading?`, `refreshing?`, `onRefresh?`, `emptyText?`, `ListHeaderComponent?`, `ListFooterComponent?`, `contentContainerStyle?`
+
+## Hooks and utilities
+
+- `formatCashWallet(value)`: `"PKR 12,500"`. `formatPointsWallet(value)`: `"12,500 PTS"`. Both accept `number | string | null | undefined` and treat invalid values as 0.
+- `useSinglePress(handler, delay = 500)`: returns a stable press handler that ignores repeat presses within `delay` ms. Use it for any `Pressable` / `TouchableOpacity` you build yourself.
+- `getFieldErrorMessage(errors, key)`: reads a field's message from react-hook-form `errors` or a `{ key: message }` map. `FormErrors` is the type the form components accept.
+- `useStrings()`, `defaultStrings`, `UIStrings`: see Translations.
+
+## Optional entry points
+
+These need extra native modules, so they live in their own entry points. Apps that don't import them don't need the modules.
+
+### @crownone/ui/receipt
+
+Needs `react-native-view-shot` and `expo-sharing` (`npx expo install react-native-view-shot expo-sharing`).
+
+`ShareableReceipt` renders a fixed-color receipt (same in light and dark mode) that can be captured as a PNG. `useShareReceipt()` returns `{ receiptRef, shareReceipt, isSharing }`. Render the receipt off-screen, attach `receiptRef`, and call `shareReceipt` from a button.
+
+- `ShareableReceipt` props: `data: ShareableReceiptData` (required), `logo?` (image source shown in the header).
+- `ShareableReceiptData`: `title`, `dateText`, `badge?`, `idLabel`, `idValue`, `fromLabel`, `from: { name, mobile }`, `toLabel`, `to: { name, mobile }`, `details?: { label, value, icon? }[]` (icon is an Ionicons name), `amountLabel`, `amountText`, `disclaimer`.
+
+```tsx
+import { ShareableReceipt, useShareReceipt } from "@crownone/ui/receipt";
+
+const { receiptRef, shareReceipt, isSharing } = useShareReceipt();
+
+<View style={{ position: "absolute", top: 0, left: -2000 }} pointerEvents="none">
+  <ShareableReceipt ref={receiptRef} logo={require("./assets/logo.png")} data={receiptData} />
+</View>
+<StyledButton title="Share receipt" variant="outline" onPress={shareReceipt} loading={isSharing} disabled={isSharing} />
+```
+
+### @crownone/ui/otp
+
+Needs `input-otp-native` (`npm install input-otp-native`).
+
+`OtpBoxInput`: one box per digit, built on `input-otp-native`. Props: `value: string`, `onChange: (value: string) => void`, `maxLength?` (default 6). Forwards a ref (`OTPInputRef` from `input-otp-native`) for `focus()` / `clear()`.
+
+```tsx
+import { OtpBoxInput } from "@crownone/ui/otp";
+
+<OtpBoxInput value={otp} onChange={setOtp} />
+```
+
+## TypeScript exports
+
+`AppTheme`, `AppColors`, `UIStrings`, `FormErrors`, `StyledButtonProps`, `StyledButtonVariant`, `StyledChipVariant`, `StatusCardVariant`, `DropdownItem`, `TabItem`, `SkeletonProps`, `DateSection`, `AlphabetSection`. From `@crownone/ui/receipt`: `ShareableReceiptData`, `ShareableReceiptProps`, `ReceiptParty`, `ReceiptDetailRow`.
+
+```ts
+import type { AppTheme, DropdownItem, TabItem } from "@crownone/ui";
+```
+
+## Links
+
+- Repository and full README with rendered previews: https://github.com/hammadev/crownone-ui
+- Interactive playground (Expo Snack): https://github.com/hammadev/crownone-ui#live-playground
+- npm: https://www.npmjs.com/package/@crownone/ui
